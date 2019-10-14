@@ -97,7 +97,7 @@ class Listing_Claim extends Model_Form {
 
 				'fields'  => [
 					'listing_id' => [
-						'type' => 'number',
+						'type' => 'hidden',
 					],
 				],
 
