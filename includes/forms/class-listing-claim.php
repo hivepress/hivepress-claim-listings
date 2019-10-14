@@ -6,7 +6,7 @@
  */
 
 namespace HivePress\Forms;
-
+// todo.
 use HivePress\Helpers as hp;
 
 // Exit if accessed directly.
@@ -96,6 +96,14 @@ class Listing_Claim extends Model_Form {
 				'action'  => hp\get_rest_url( '/todo' ),
 
 				'fields'  => [
+					'details'    => [
+						'order' => 10,
+					],
+
+					'user_id'    => [
+						'type' => 'hidden',
+					],
+
 					'listing_id' => [
 						'type' => 'hidden',
 					],

@@ -49,6 +49,30 @@ class Listing_Claim extends Post {
 		$args = hp\merge_arrays(
 			[
 				'fields'  => [
+					'title'      => [
+						'type'       => 'text',
+						'max_length' => 128,
+						'required'   => true,
+					],
+
+					'details'    => [
+						'label'      => esc_html__( 'Details', 'hivepress-claim-listings' ),
+						'type'       => 'textarea',
+						'max_length' => 10240,
+						'required'   => true,
+					],
+
+					'status'     => [
+						'type'       => 'text',
+						'max_length' => 128,
+					],
+
+					'user_id'    => [
+						'type'      => 'number',
+						'min_value' => 0,
+						'required'  => true,
+					],
+
 					'listing_id' => [
 						'type'      => 'number',
 						'min_value' => 0,
@@ -57,7 +81,11 @@ class Listing_Claim extends Post {
 				],
 
 				'aliases' => [
-					'post_parent' => 'listing_id',
+					'post_title'   => 'title',
+					'post_content' => 'details',
+					'post_status'  => 'status',
+					'post_author'  => 'user_id',
+					'post_parent'  => 'listing_id',
 				],
 			],
 			$args
