@@ -6,6 +6,7 @@
  */
 
 namespace HivePress\Forms;
+
 // todo.
 use HivePress\Helpers as hp;
 
@@ -25,6 +26,13 @@ class Listing_Claim extends Model_Form {
 	 * @var string
 	 */
 	protected static $name;
+
+	/**
+	 * Form description.
+	 *
+	 * @var string
+	 */
+	protected static $description;
 
 	/**
 	 * Form title.
@@ -90,12 +98,13 @@ class Listing_Claim extends Model_Form {
 	public static function init( $args = [] ) {
 		$args = hp\merge_arrays(
 			[
-				'title'   => esc_html__( 'Claim Listing', 'hivepress-claim-listings' ),
-				'message' => esc_html__( 'Your todo.', 'hivepress-claim-listings' ),
-				'model'   => 'listing_claim',
-				'action'  => hp\get_rest_url( '/todo' ),
+				'title'       => esc_html__( 'Claim Listing', 'hivepress-claim-listings' ),
+				'description' => esc_html__( 'todo', 'hivepress-claim-listings' ),
+				'message'     => esc_html__( 'Your todo.', 'hivepress-claim-listings' ),
+				'model'       => 'listing_claim',
+				'action'      => hp\get_rest_url( '/todo' ),
 
-				'fields'  => [
+				'fields'      => [
 					'details'    => [
 						'order' => 10,
 					],
@@ -109,7 +118,7 @@ class Listing_Claim extends Model_Form {
 					],
 				],
 
-				'button'  => [
+				'button'      => [
 					'label' => esc_html__( 'Claim Listing', 'hivepress-claim-listings' ),
 				],
 			],
