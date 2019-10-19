@@ -36,6 +36,28 @@ return [
 					],
 				],
 			],
+
+			'emails'   => [
+				'fields' => [
+					'email_claim_approve_todo' => [
+						'label'       => esc_html__( 'Claim Approved', 'hivepress-claim-listings' ),
+						'description' => esc_html__( 'This email is sent to users when claim is approved, the following tokens are available: %user_name%, %listing_title%, %listing_url%.', 'hivepress-claim-listings' ),
+						'type'        => 'textarea',
+						'default'     => hp\sanitize_html( __( 'Hi, %user_name%! Your claim for listing "%listing_title%" has been approved, click on the following link to view it: %listing_url%', 'hivepress-claim-listings' ) ),
+						'required'    => true,
+						'order'       => 30,
+					],
+
+					'email_claim_reject_todo'  => [
+						'label'       => esc_html__( 'Claim Rejected', 'hivepress-claim-listings' ),
+						'description' => esc_html__( 'This email is sent to users when claim is rejected, the following tokens are available: %user_name%, %listing_title%.', 'hivepress-claim-listings' ),
+						'type'        => 'textarea',
+						'default'     => hp\sanitize_html( __( 'Hi, %user_name%! Unfortunately, your claim for listing "%listing_title%" has been rejected.', 'hivepress-claim-listings' ) ),
+						'required'    => true,
+						'order'       => 40,
+					],
+				],
+			],
 		],
 	],
 ];

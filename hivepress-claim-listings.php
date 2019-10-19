@@ -2,7 +2,7 @@
 /**
  * Plugin Name: HivePress Claim Listings
  * Description: Claim listings extension for HivePress plugin.
- * Version: 1.0
+ * Version: 1.0.0
  * Author: HivePress
  * Author URI: https://hivepress.io/
  * Text Domain: hivepress-claim-listings

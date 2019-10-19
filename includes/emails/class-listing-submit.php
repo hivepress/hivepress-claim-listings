@@ -1,23 +1,23 @@
 <?php
 /**
- * Listing claim email.
+ * Listing submit email.
  *
  * @package HivePress\Emails
  */
-
-namespace HivePress\Emails;
 // todo.
+namespace HivePress\Emails;
+
 use HivePress\Helpers as hp;
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Listing claim email class.
+ * Listing submit email class.
  *
- * @class Listing_Claim
+ * @class Listing_Submit
  */
-class Listing_Claim extends Email {
+class Listing_Submit extends Email {
 
 	/**
 	 * Email name.
@@ -48,8 +48,8 @@ class Listing_Claim extends Email {
 	public static function init( $args = [] ) {
 		$args = hp\merge_arrays(
 			[
-				'subject' => esc_html__( 'Listing Claimed', 'hivepress-claim-listings' ),
-				'body'    => hp\sanitize_html( __( 'Listing "%listing_title%" %listing_url% has been claimed with the following details: %claim_details%', 'hivepress-claim-listings' ) ),
+				'subject' => esc_html__( 'Listing Submitted', 'hivepress' ),
+				'body'    => hp\sanitize_html( __( 'A new listing "%listing_title%" has been submitted, click on the following link to view it: %listing_url%', 'hivepress' ) ),
 			],
 			$args
 		);
