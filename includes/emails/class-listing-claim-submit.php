@@ -1,6 +1,6 @@
 <?php
 /**
- * Listing submit email.
+ * Listing claim submit email.
  *
  * @package HivePress\Emails
  */
@@ -13,11 +13,11 @@ use HivePress\Helpers as hp;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Listing submit email class.
+ * Listing claim submit email class.
  *
- * @class Listing_Submit
+ * @class Listing_Claim_Submit
  */
-class Listing_Submit extends Email {
+class Listing_Claim_Submit extends Email {
 
 	/**
 	 * Email name.

@@ -52,7 +52,6 @@ class Listing_Claim extends Post {
 					'title'      => [
 						'type'       => 'text',
 						'max_length' => 128,
-						'required'   => true,
 					],
 
 					'details'    => [

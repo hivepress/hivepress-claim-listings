@@ -39,7 +39,7 @@ return [
 
 			'emails'   => [
 				'fields' => [
-					'email_claim_approve_tod' => [
+					'email_listing_claim_approve' => [
 						'label'       => esc_html__( 'Claim Approved', 'hivepress-claim-listings' ),
 						'description' => esc_html__( 'This email is sent to users when claim is approved, the following tokens are available: %user_name%, %listing_title%, %listing_url%.', 'hivepress-claim-listings' ),
 						'type'        => 'textarea',
@@ -48,7 +48,7 @@ return [
 						'order'       => 30,
 					],
 
-					'email_claim_reject_todo' => [
+					'email_listing_claim_reject'  => [
 						'label'       => esc_html__( 'Claim Rejected', 'hivepress-claim-listings' ),
 						'description' => esc_html__( 'This email is sent to users when claim is rejected, the following tokens are available: %user_name%, %listing_title%.', 'hivepress-claim-listings' ),
 						'type'        => 'textarea',

@@ -38,6 +38,9 @@ final class Claim {
 			// Manage admin columns.
 			add_filter( 'manage_hp_listing_claim_posts_columns', [ $this, 'add_admin_columns' ] );
 			add_action( 'manage_hp_listing_claim_posts_custom_column', [ $this, 'render_admin_columns' ], 10, 2 );
+
+			// Add meta fields.
+			add_filter( 'hivepress/v1/meta_boxes/listing_claim_details', [ $this, 'add_meta_fields' ] );
 		} else {
 
 			// Alter templates.
@@ -58,13 +61,7 @@ final class Claim {
 		if ( 'hp_listing_claim' === $claim->post_type ) {
 
 			// Get listing ID.
-			$listing_id = hp\get_post_id(
-				[
-					'post_type'   => 'hp_listing',
-					'post_status' => 'publish',
-					'post__in'    => [ absint( $claim->post_parent ) ],
-				]
-			);
+			$listing_id = $this->get_listing_id( $claim->ID );
 
 			if ( 0 !== $listing_id ) {
 				if ( 'pending' === $new_status ) {
@@ -165,23 +162,14 @@ final class Claim {
 			// Get claim ID.
 			$claim_id = hp\get_post_id(
 				[
-					'post_type' => 'hp_listing_claim',
-					'author'    => $order->get_user_id(),
+					'post_type'   => 'hp_listing_claim',
+					'post_status' => [ 'draft', 'publish' ],
+					'author'      => $order->get_user_id(),
 				]
 			);
 
 			if ( 0 !== $claim_id ) {
-
-				// Get listing ID.
-				$listing_id = hp\get_post_id(
-					[
-						'post_type'   => 'hp_listing',
-						'post_status' => 'publish',
-						'post__in'    => [ absint( wp_get_post_parent_id( $claim_id ) ) ],
-					]
-				);
-
-				if ( 0 !== $listing_id ) {
+				if ( $this->get_listing_id( $claim_id ) !== 0 ) {
 					if ( in_array( $new_status, [ 'processing', 'completed' ], true ) ) {
 
 						// Submit claim.
@@ -233,13 +221,7 @@ final class Claim {
 			$output = '&mdash;';
 
 			// Get listing ID.
-			$listing_id = hp\get_post_id(
-				[
-					'post_type'   => 'hp_listing',
-					'post_status' => 'publish',
-					'post__in'    => [ absint( wp_get_post_parent_id( $claim_id ) ) ],
-				]
-			);
+			$listing_id = $this->get_listing_id( $claim_id );
 
 			if ( 0 !== $listing_id ) {
 
@@ -249,6 +231,45 @@ final class Claim {
 
 			echo $output;
 		}
+	}
+
+	/**
+	 * Adds meta fields.
+	 *
+	 * @param array $meta_box Meta box arguments.
+	 * @return array
+	 */
+	public function add_meta_fields( $meta_box ) {
+		return array_merge(
+			$meta_box,
+			[
+				'fields' => [
+					'listing' => [
+						'label'      => esc_html__( 'Listing', 'hivepress-claim-listings' ),
+						'type'       => 'select',
+						'options'    => 'posts',
+						'post_type'  => 'hp_listing',
+						'value'      => $this->get_listing_id( get_the_ID() ),
+						'order'      => 10,
+
+						'attributes' => [
+							'disabled' => true,
+						],
+					],
+
+					'details' => [
+						'label'      => esc_html__( 'Details', 'hivepress-claim-listings' ),
+						'type'       => 'textarea',
+						'value'      => get_the_content(),
+						'order'      => 20,
+
+						'attributes' => [
+							'disabled' => true,
+						],
+					],
+				],
+			]
+		);
 	}
 
 	/**
@@ -302,8 +323,7 @@ final class Claim {
 
 								'blocks'  => [
 									'listing_claim_form' => [
-										'type'       => 'form',
-										'form'       => 'listing_claim',
+										'type'       => 'listing_claim_submit_form',
 										'order'      => 10,
 
 										'attributes' => [
@@ -323,6 +343,22 @@ final class Claim {
 				],
 			],
 			'blocks'
+		);
+	}
+
+	/**
+	 * Gets listing ID.
+	 *
+	 * @param int $claim_id Claim ID.
+	 * @return int
+	 */
+	protected function get_listing_id( $claim_id ) {
+		return hp\get_post_id(
+			[
+				'post_type'   => 'hp_listing',
+				'post_status' => 'publish',
+				'post__in'    => [ absint( wp_get_post_parent_id( $claim_id ) ) ],
+			]
 		);
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Listing reject email.
+ * Listing claim approve email.
  *
  * @package HivePress\Emails
  */
@@ -13,11 +13,11 @@ use HivePress\Helpers as hp;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Listing reject email class.
+ * Listing claim approve email class.
  *
- * @class Listing_Reject
+ * @class Listing_Claim_Approve
  */
-class Listing_Reject extends Email {
+class Listing_Claim_Approve extends Email {
 
 	/**
 	 * Email name.
@@ -48,8 +48,8 @@ class Listing_Reject extends Email {
 	public static function init( $args = [] ) {
 		$args = hp\merge_arrays(
 			[
-				'subject' => esc_html__( 'Listing Rejected', 'hivepress' ),
-				'body'    => hp\sanitize_html( __( 'Hi, %user_name%! Unfortunately, your listing "%listing_title%" has been rejected.', 'hivepress' ) ),
+				'subject' => esc_html__( 'Listing Approved', 'hivepress' ),
+				'body'    => hp\sanitize_html( __( 'Hi, %user_name%! Your listing "%listing_title%" has been approved, click on the following link to view it: %listing_url%', 'hivepress' ) ),
 			],
 			$args
 		);

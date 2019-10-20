@@ -1,6 +1,6 @@
 <?php
 /**
- * Listing claim form.
+ * Listing claim submit form.
  *
  * @package HivePress\Forms
  */
@@ -14,11 +14,11 @@ use HivePress\Helpers as hp;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Listing claim form class.
+ * Listing claim submit form class.
  *
- * @class Listing_Claim
+ * @class Listing_Claim_Submit
  */
-class Listing_Claim extends Model_Form {
+class Listing_Claim_Submit extends Model_Form {
 
 	/**
 	 * Form name.
@@ -102,15 +102,11 @@ class Listing_Claim extends Model_Form {
 				'description' => esc_html__( 'todo', 'hivepress-claim-listings' ),
 				'message'     => esc_html__( 'Your todo.', 'hivepress-claim-listings' ),
 				'model'       => 'listing_claim',
-				'action'      => hp\get_rest_url( '/todo' ),
+				'action'      => hp\get_rest_url( '/claims' ),
 
 				'fields'      => [
 					'details'    => [
 						'order' => 10,
-					],
-
-					'user_id'    => [
-						'type' => 'hidden',
 					],
 
 					'listing_id' => [
