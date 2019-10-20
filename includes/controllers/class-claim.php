@@ -156,6 +156,10 @@ class Claim extends Controller {
 			return hp\rest_error( 400 );
 		}
 
+		// Set claim title.
+		$claim->set_title( '#' . $claim->get_id() );
+		$claim->save();
+
 		return new \WP_Rest_Response(
 			[
 				'data' => [
