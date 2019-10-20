@@ -79,7 +79,7 @@ final class Claim {
 			$form['redirect'] = wc_get_page_permalink( 'checkout' );
 
 			// Set button caption.
-			$form['button']['label'] = sprintf( esc_html__( 'Submit Claim for %s', 'hivepress-claim-listings' ), wp_strip_all_tags( wc_price( $product->get_price() ) ) );
+			$form['button']['label'] = sprintf( esc_html__( 'Claim for %s', 'hivepress-claim-listings' ), wp_strip_all_tags( wc_price( $product->get_price() ) ) );
 		}
 
 		return $form;
