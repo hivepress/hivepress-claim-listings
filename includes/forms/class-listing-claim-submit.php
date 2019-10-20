@@ -77,6 +77,13 @@ class Listing_Claim_Submit extends Model_Form {
 	protected static $captcha = false;
 
 	/**
+	 * Form redirect.
+	 *
+	 * @var mixed
+	 */
+	protected static $redirect = false;
+
+	/**
 	 * Form fields.
 	 *
 	 * @var array
@@ -99,8 +106,8 @@ class Listing_Claim_Submit extends Model_Form {
 		$args = hp\merge_arrays(
 			[
 				'title'       => esc_html__( 'Claim Listing', 'hivepress-claim-listings' ),
-				'description' => esc_html__( 'todo', 'hivepress-claim-listings' ),
-				'message'     => esc_html__( 'Your todo.', 'hivepress-claim-listings' ),
+				'description' => esc_html__( "Please provide details that will help us verify that you're the owner of this listing.", 'hivepress-claim-listings' ),
+				'message'     => esc_html__( 'Your claim has been submitted.', 'hivepress-claim-listings' ),
 				'model'       => 'listing_claim',
 				'action'      => hp\get_rest_url( '/claims' ),
 
@@ -115,7 +122,7 @@ class Listing_Claim_Submit extends Model_Form {
 				],
 
 				'button'      => [
-					'label' => esc_html__( 'Claim Listing', 'hivepress-claim-listings' ),
+					'label' => esc_html__( 'Submit Claim', 'hivepress-claim-listings' ),
 				],
 			],
 			$args

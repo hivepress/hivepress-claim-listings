@@ -28,9 +28,13 @@ final class Claim {
 		// Update claim status.
 		add_action( 'transition_post_status', [ $this, 'update_claim_status' ], 10, 3 );
 
-		// Update order status.
 		if ( class_exists( 'WooCommerce' ) ) {
+
+			// Update order status.
 			add_action( 'woocommerce_order_status_changed', [ $this, 'update_order_status' ], 10, 4 );
+
+			// todo.
+			add_filter( 'hivepress/v1/forms/listing_claim_submit', [ $this, 'filter_form_args' ] );
 		}
 
 		if ( is_admin() ) {
@@ -54,6 +58,31 @@ final class Claim {
 			add_filter( 'hivepress/v1/templates/listing_view_page', [ $this, 'alter_listing_view_block' ] );
 			add_filter( 'hivepress/v1/templates/listing_view_page', [ $this, 'alter_listing_view_page' ] );
 		}
+	}
+
+	// todo.
+	public function filter_form_args( $form ) {
+
+		// Get product.
+		$product = false;
+
+		if ( get_option( 'hp_product_claim' ) ) {
+			$product = wc_get_product( get_option( 'hp_product_claim' ) );
+		}
+
+		if ( ! empty( $product ) ) {
+
+			// Unset message.
+			$form['message'] = null;
+
+			// Set redirect URL.
+			$form['redirect'] = wc_get_page_permalink( 'checkout' );
+
+			// Set button caption.
+			$form['button']['label'] = sprintf( esc_html__( 'Submit Claim for %s', 'hivepress-claim-listings' ), wp_strip_all_tags( wc_price( $product->get_price() ) ) );
+		}
+
+		return $form;
 	}
 
 	/**
