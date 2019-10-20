@@ -42,6 +42,9 @@ final class Claim {
 			// Add meta fields.
 			add_filter( 'hivepress/v1/meta_boxes/listing_claim_details', [ $this, 'add_meta_fields' ] );
 
+			// Delete meta values.
+			add_action( 'save_post_hp_listing_claim', [ $this, 'delete_meta_values' ], 99 );
+
 			// Filter editor settings.
 			add_filter( 'wp_editor_settings', [ $this, 'filter_editor_settings' ] );
 		} else {
@@ -265,20 +268,33 @@ final class Claim {
 	}
 
 	/**
+	 * Deletes meta values.
+	 *
+	 * @param int $claim_id Claim ID.
+	 */
+	public function delete_meta_values( $claim_id ) {
+		delete_post_meta( $claim_id, 'hp_listing' );
+	}
+
+	/**
 	 * Filters editor settings.
 	 *
 	 * @param array $settings Editor settings.
 	 * @return array
 	 */
 	public function filter_editor_settings( $settings ) {
-		$settings = array_merge(
-			$settings,
-			[
-				'media_buttons' => false,
-				'tinymce'       => false,
-				'quicktags'     => false,
-			]
-		);
+		$current_screen = get_current_screen();
+
+		if ( ! is_null( $current_screen ) && 'hp_listing_claim' === $current_screen->post_type ) {
+			$settings = array_merge(
+				$settings,
+				[
+					'media_buttons' => false,
+					'tinymce'       => false,
+					'quicktags'     => false,
+				]
+			);
+		}
 
 		return $settings;
 	}
