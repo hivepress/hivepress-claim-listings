@@ -18,7 +18,7 @@ return [
 				'order'  => 30,
 
 				'fields' => [
-					'product_claim_todo'           => [
+					'product_claim'           => [
 						'label'       => esc_html__( 'WooCommerce Product', 'hivepress-claim-listings' ),
 						'description' => esc_html__( 'Choose a WooCommerce product that must be purchased in order to submit a claim.', 'hivepress-claim-listings' ),
 						'type'        => 'select',
@@ -27,7 +27,7 @@ return [
 						'order'       => 10,
 					],
 
-					'claim_enable_moderation_todo' => [
+					'claim_enable_moderation' => [
 						'label'   => esc_html__( 'Moderation', 'hivepress-claim-listings' ),
 						'caption' => esc_html__( 'Manually approve new claims', 'hivepress-claim-listings' ),
 						'type'    => 'checkbox',
@@ -39,7 +39,7 @@ return [
 
 			'emails'   => [
 				'fields' => [
-					'email_claim_approve_todo' => [
+					'email_claim_approve_tod' => [
 						'label'       => esc_html__( 'Claim Approved', 'hivepress-claim-listings' ),
 						'description' => esc_html__( 'This email is sent to users when claim is approved, the following tokens are available: %user_name%, %listing_title%, %listing_url%.', 'hivepress-claim-listings' ),
 						'type'        => 'textarea',
@@ -48,7 +48,7 @@ return [
 						'order'       => 30,
 					],
 
-					'email_claim_reject_todo'  => [
+					'email_claim_reject_todo' => [
 						'label'       => esc_html__( 'Claim Rejected', 'hivepress-claim-listings' ),
 						'description' => esc_html__( 'This email is sent to users when claim is rejected, the following tokens are available: %user_name%, %listing_title%.', 'hivepress-claim-listings' ),
 						'type'        => 'textarea',

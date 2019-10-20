@@ -33,7 +33,12 @@ final class Claim {
 			add_action( 'woocommerce_order_status_changed', [ $this, 'update_order_status' ], 10, 4 );
 		}
 
-		if ( ! is_admin() ) {
+		if ( is_admin() ) {
+
+			// Manage admin columns.
+			add_filter( 'manage_hp_listing_claim_posts_columns', [ $this, 'add_admin_columns' ] );
+			add_action( 'manage_hp_listing_claim_posts_custom_column', [ $this, 'render_admin_columns' ], 10, 2 );
+		} else {
 
 			// Alter templates.
 			add_filter( 'hivepress/v1/templates/listing_view_block', [ $this, 'alter_listing_view_block' ] );
@@ -198,6 +203,51 @@ final class Claim {
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * Adds admin columns.
+	 *
+	 * @param array $columns Columns.
+	 * @return array
+	 */
+	public function add_admin_columns( $columns ) {
+		return array_merge(
+			array_slice( $columns, 0, 3, true ),
+			[
+				'listing' => esc_html__( 'Listing', 'hivepress-claim-listings' ),
+			],
+			array_slice( $columns, 3, null, true )
+		);
+	}
+
+	/**
+	 * Renders admin columns.
+	 *
+	 * @param string $column Column name.
+	 * @param int    $claim_id Claim ID.
+	 */
+	public function render_admin_columns( $column, $claim_id ) {
+		if ( 'listing' === $column ) {
+			$output = '&mdash;';
+
+			// Get listing ID.
+			$listing_id = hp\get_post_id(
+				[
+					'post_type'   => 'hp_listing',
+					'post_status' => 'publish',
+					'post__in'    => [ absint( wp_get_post_parent_id( $claim_id ) ) ],
+				]
+			);
+
+			if ( 0 !== $listing_id ) {
+
+				// Render column value.
+				$output = '<a href="' . esc_url( get_edit_post_link( $listing_id ) ) . '">' . esc_html( get_the_title( $listing_id ) ) . '</a>';
+			}
+
+			echo $output;
 		}
 	}
 
