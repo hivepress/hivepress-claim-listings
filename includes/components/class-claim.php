@@ -41,6 +41,9 @@ final class Claim {
 
 			// Add meta fields.
 			add_filter( 'hivepress/v1/meta_boxes/listing_claim_details', [ $this, 'add_meta_fields' ] );
+
+			// Filter editor settings.
+			add_filter( 'wp_editor_settings', [ $this, 'filter_editor_settings' ] );
 		} else {
 
 			// Alter templates.
@@ -256,20 +259,28 @@ final class Claim {
 							'disabled' => true,
 						],
 					],
-
-					'details' => [
-						'label'      => esc_html__( 'Details', 'hivepress-claim-listings' ),
-						'type'       => 'textarea',
-						'value'      => get_the_content(),
-						'order'      => 20,
-
-						'attributes' => [
-							'disabled' => true,
-						],
-					],
 				],
 			]
 		);
+	}
+
+	/**
+	 * Filters editor settings.
+	 *
+	 * @param array $settings Editor settings.
+	 * @return array
+	 */
+	public function filter_editor_settings( $settings ) {
+		$settings = array_merge(
+			$settings,
+			[
+				'media_buttons' => false,
+				'tinymce'       => false,
+				'quicktags'     => false,
+			]
+		);
+
+		return $settings;
 	}
 
 	/**
