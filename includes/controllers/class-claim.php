@@ -59,7 +59,7 @@ class Claim extends Controller {
 
 					'submit_complete' => [
 						'title'    => esc_html__( 'Claim Submitted', 'hivepress-claim-listings' ),
-						'path'     => '/claim-listing/complete',
+						'path'     => '/claim-listing/(?P<listing_id>\d+)/complete',
 						'redirect' => 'redirect_listing_claim_complete_page',
 						'action'   => 'render_listing_claim_complete_page',
 					],
@@ -118,6 +118,20 @@ class Claim extends Controller {
 			return hp\rest_error( 400 );
 		}
 
+		// Get claim ID.
+		$claim_id = hp\get_post_id(
+			[
+				'post_type'   => 'hp_listing_claim',
+				'post_status' => [ 'draft', 'pending', 'publish' ],
+				'post_parent' => $listing_id,
+				'author'      => $user_id,
+			]
+		);
+
+		if ( 0 !== $claim_id ) {
+			return hp\rest_error( 400, esc_html__( "You've already submitted a claim for this listing", 'hivepress-claim-listings' ) );
+		}
+
 		// Get claim status.
 		$status = 'publish';
 
@@ -164,10 +178,6 @@ class Claim extends Controller {
 			return hp\rest_error( 400 );
 		}
 
-		// Set claim title.
-		$claim->set_title( '#' . $claim->get_id() );
-		$claim->save();
-
 		return new \WP_Rest_Response(
 			[
 				'data' => [
@@ -190,6 +200,35 @@ class Claim extends Controller {
 			return add_query_arg( 'redirect', rawurlencode( hp\get_current_url() ), User::get_url( 'login_user' ) );
 		}
 
+		// Get listing ID.
+		$listing_id = hp\get_post_id(
+			[
+				'post_type'   => 'hp_listing',
+				'post_status' => 'publish',
+				'post__in'    => [ absint( get_query_var( 'hp_listing_id' ) ) ],
+			]
+		);
+
+		// Check listing.
+		if ( 0 === $listing_id ) {
+			return true;
+		}
+
+		// Get claim ID.
+		$claim_id = hp\get_post_id(
+			[
+				'post_type'   => 'hp_listing_claim',
+				'post_status' => [ 'pending', 'publish' ],
+				'post_parent' => $listing_id,
+				'author'      => get_current_user_id(),
+			]
+		);
+
+		// Check claim.
+		if ( 0 === $claim_id ) {
+			return true;
+		}
+
 		return false;
 	}
 
@@ -202,6 +241,10 @@ class Claim extends Controller {
 		return ( new Blocks\Template(
 			[
 				'template' => 'listing_claim_complete_page',
+
+				'context'  => [
+					'listing' => Models\Listing::get( get_query_var( 'hp_listing_id' ) ),
+				],
 			]
 		) )->render();
 	}

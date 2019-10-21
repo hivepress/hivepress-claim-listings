@@ -26,6 +26,9 @@ final class Claim {
 	 */
 	public function __construct() {
 
+		// Update claim.
+		add_action( 'save_post', [ $this, 'update_claim' ], 99, 2 );
+
 		// Update claim status.
 		add_action( 'transition_post_status', [ $this, 'update_claim_status' ], 10, 3 );
 
@@ -50,9 +53,6 @@ final class Claim {
 			// Add meta fields.
 			add_filter( 'hivepress/v1/meta_boxes/listing_claim_details', [ $this, 'add_meta_fields' ] );
 
-			// Delete meta values.
-			add_action( 'save_post_hp_listing_claim', [ $this, 'delete_meta_values' ], 99 );
-
 			// Filter editor settings.
 			add_filter( 'wp_editor_settings', [ $this, 'filter_editor_settings' ] );
 		} else {
@@ -64,6 +64,40 @@ final class Claim {
 
 			// Set page title.
 			add_filter( 'hivepress/v1/controllers/claim/routes/submit_complete', [ $this, 'set_page_title' ] );
+		}
+	}
+
+	/**
+	 * Updates claim.
+	 *
+	 * @param int     $claim_id Claim ID.
+	 * @param WP_Post $claim Claim object.
+	 */
+	public function update_claim( $claim_id, $claim ) {
+		if ( 'hp_listing_claim' === $claim->post_type ) {
+			if ( metadata_exists( 'post', $claim_id, 'hp_listing' ) ) {
+
+				// Set listing ID.
+				wp_update_post(
+					[
+						'ID'          => $claim_id,
+						'post_parent' => absint( get_post_meta( $claim_id, 'hp_listing' ) ),
+					]
+				);
+
+				// Delete meta value.
+				delete_post_meta( $claim_id, 'hp_listing' );
+			}
+
+			// Set claim title.
+			if ( '#' . $claim_id !== $claim->post_title ) {
+				wp_update_post(
+					[
+						'ID'         => $claim_id,
+						'post_title' => '#' . $claim_id,
+					]
+				);
+			}
 		}
 	}
 
@@ -316,29 +350,16 @@ final class Claim {
 			[
 				'fields' => [
 					'listing' => [
-						'label'      => esc_html__( 'Listing', 'hivepress-claim-listings' ),
-						'type'       => 'select',
-						'options'    => 'posts',
-						'post_type'  => 'hp_listing',
-						'value'      => $this->get_listing_id( get_the_ID() ),
-						'order'      => 10,
-
-						'attributes' => [
-							'disabled' => true,
-						],
+						'label'     => esc_html__( 'Listing', 'hivepress-claim-listings' ),
+						'type'      => 'select',
+						'options'   => 'posts',
+						'post_type' => 'hp_listing',
+						'value'     => $this->get_listing_id( get_the_ID() ),
+						'order'     => 10,
 					],
 				],
 			]
 		);
-	}
-
-	/**
-	 * Deletes meta values.
-	 *
-	 * @param int $claim_id Claim ID.
-	 */
-	public function delete_meta_values( $claim_id ) {
-		delete_post_meta( $claim_id, 'hp_listing' );
 	}
 
 	/**
@@ -445,8 +466,19 @@ final class Claim {
 	 * @return array
 	 */
 	public function set_page_title( $route ) {
-		// todo get listing.
-		if ( get_current_user_id() === $listing->get_user_id() ) {
+
+		// Get listing ID.
+		$listing_id = hp\get_post_id(
+			[
+				'post_type'   => 'hp_listing',
+				'post_status' => 'publish',
+				'author'      => get_current_user_id(),
+				'post__in'    => [ absint( get_query_var( 'hp_listing_id' ) ) ],
+			]
+		);
+
+		// Set page title.
+		if ( 0 !== $listing_id ) {
 			$route['title'] = esc_html__( 'Claim Approved', 'hivepress-claim-listings' );
 		}
 
