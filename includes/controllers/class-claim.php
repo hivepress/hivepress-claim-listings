@@ -10,6 +10,7 @@ namespace HivePress\Controllers;
 use HivePress\Helpers as hp;
 use HivePress\Forms;
 use HivePress\Models;
+use HivePress\Blocks;
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
@@ -54,6 +55,13 @@ class Claim extends Controller {
 								'action'  => 'submit_claim',
 							],
 						],
+					],
+
+					'submit_complete' => [
+						'title'    => esc_html__( 'Claim Submitted', 'hivepress-claim-listings' ),
+						'path'     => '/claim-listing/complete',
+						'redirect' => 'redirect_listing_claim_complete_page',
+						'action'   => 'render_listing_claim_complete_page',
 					],
 				],
 			],
@@ -168,5 +176,33 @@ class Claim extends Controller {
 			],
 			200
 		);
+	}
+
+	/**
+	 * Redirects listing claim complete page.
+	 *
+	 * @return mixed
+	 */
+	public function redirect_listing_claim_complete_page() {
+
+		// Check authentication.
+		if ( ! is_user_logged_in() ) {
+			return add_query_arg( 'redirect', rawurlencode( hp\get_current_url() ), User::get_url( 'login_user' ) );
+		}
+
+		return false;
+	}
+
+	/**
+	 * Renders listing claim complete page.
+	 *
+	 * @return string
+	 */
+	public function render_listing_claim_complete_page() {
+		return ( new Blocks\Template(
+			[
+				'template' => 'listing_claim_complete_page',
+			]
+		) )->render();
 	}
 }

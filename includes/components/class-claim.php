@@ -9,6 +9,7 @@ namespace HivePress\Components;
 
 use HivePress\Helpers as hp;
 use HivePress\Emails;
+use HivePress\Controllers;
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
@@ -60,6 +61,9 @@ final class Claim {
 			add_filter( 'hivepress/v1/templates/listing_view_block', [ $this, 'alter_listing_view_block' ] );
 			add_filter( 'hivepress/v1/templates/listing_view_page', [ $this, 'alter_listing_view_block' ] );
 			add_filter( 'hivepress/v1/templates/listing_view_page', [ $this, 'alter_listing_view_page' ] );
+
+			// Set page title.
+			add_filter( 'hivepress/v1/controllers/claim/routes/submit_complete', [ $this, 'set_page_title' ] );
 		}
 	}
 
@@ -213,9 +217,9 @@ final class Claim {
 				$order = wc_get_order( get_query_var( 'order-received' ) );
 
 				if ( ! empty( $order ) && in_array( $order->get_status(), [ 'processing', 'completed' ], true ) && in_array( $product_id, $this->get_product_ids( $order ), true ) ) {
-					// todo redirect.
-					echo '123';
-					die();
+					wp_safe_redirect( Controllers\Claim::get_url( 'submit_complete' ) );
+
+					exit();
 				}
 			}
 		}
@@ -252,7 +256,8 @@ final class Claim {
 		} elseif ( ! get_option( 'hp_claim_enable_moderation' ) ) {
 
 			// Set redirect URL.
-			// todo.
+			$form['redirect'] = Controllers\Claim::get_url( 'submit_complete' );
+
 			// Set button caption.
 			$form['button']['label'] = esc_html__( 'Claim Listing', 'hivepress-claim-listing' );
 		}
@@ -431,6 +436,21 @@ final class Claim {
 			],
 			'blocks'
 		);
+	}
+
+	/**
+	 * Sets page title.
+	 *
+	 * @param array $route Route arguments.
+	 * @return array
+	 */
+	public function set_page_title( $route ) {
+		// todo get listing.
+		if ( get_current_user_id() === $listing->get_user_id() ) {
+			$route['title'] = esc_html__( 'Claim Approved', 'hivepress-claim-listings' );
+		}
+
+		return $route;
 	}
 
 	/**
