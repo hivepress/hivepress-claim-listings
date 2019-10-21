@@ -368,6 +368,7 @@ final class Claim {
 						'options'   => 'posts',
 						'post_type' => 'hp_listing',
 						'value'     => $this->get_listing_id( get_the_ID() ),
+						'required'  => true,
 						'order'     => 10,
 					],
 				],
