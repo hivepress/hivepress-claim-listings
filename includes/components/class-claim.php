@@ -37,9 +37,6 @@ final class Claim {
 			// Update order status.
 			add_action( 'woocommerce_order_status_changed', [ $this, 'update_order_status' ], 10, 4 );
 
-			// Enable order endpoint.
-			add_filter( 'woocommerce_is_rest_api_request', [ $this, 'enable_order_endpoint' ] );
-
 			// Redirect order page.
 			add_action( 'template_redirect', [ $this, 'redirect_order_page' ] );
 		}
@@ -132,8 +129,15 @@ final class Claim {
 							'recipient' => get_option( 'admin_email' ),
 							'tokens'    => [
 								'listing_title' => get_the_title( $listing_id ),
-								'claim_url'     => get_edit_post_link( $claim->ID ),
 								'claim_details' => $claim->post_content,
+								'claim_url'     => admin_url(
+									'post.php?' . http_build_query(
+										[
+											'action' => 'edit',
+											'post'   => $claim->ID,
+										]
+									)
+								),
 							],
 						]
 					) )->send();
@@ -246,22 +250,6 @@ final class Claim {
 	}
 
 	/**
-	 * Enables order endpoint.
-	 *
-	 * @param bool $is_rest REST flag.
-	 * @return bool
-	 */
-	public function enable_order_endpoint( $is_rest ) {
-		$endpoint = '/hivepress/v1/claims';
-
-		if ( substr( $_SERVER['REQUEST_URI'], -strlen( $endpoint ) ) === $endpoint ) {
-			return false;
-		}
-
-		return $is_rest;
-	}
-
-	/**
 	 * Redirects order page.
 	 */
 	public function redirect_order_page() {
@@ -347,7 +335,16 @@ final class Claim {
 			if ( 0 !== $listing_id ) {
 
 				// Render column value.
-				$output = '<a href="' . esc_url( get_edit_post_link( $listing_id ) ) . '">' . esc_html( get_the_title( $listing_id ) ) . '</a>';
+				$output = '<a href="' . esc_url(
+					admin_url(
+						'post.php?' . http_build_query(
+							[
+								'action' => 'edit',
+								'post'   => $listing_id,
+							]
+						)
+					)
+				) . '">' . esc_html( get_the_title( $listing_id ) ) . '</a>';
 			}
 
 			echo $output;

@@ -67,9 +67,7 @@ class Listing_Claim_Submit_Form extends Form {
 		}
 
 		// Set redirect URL.
-		if ( 0 !== $product_id ) {
-			$this->attributes['data-redirect'] = wc_get_page_permalink( 'checkout' );
-		} elseif ( ! get_option( 'hp_claim_enable_moderation' ) ) {
+		if ( 0 !== $product_id || ! get_option( 'hp_claim_enable_moderation' ) ) {
 			$this->attributes['data-redirect'] = Controllers\Claim::get_url( 'submit_complete' );
 		}
 

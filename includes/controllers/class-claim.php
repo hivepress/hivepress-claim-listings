@@ -152,13 +152,8 @@ class Claim extends Controller {
 				);
 			}
 
+			// Set claim status.
 			if ( 0 !== $product_id ) {
-
-				// Add product to cart.
-				WC()->cart->empty_cart();
-				WC()->cart->add_to_cart( $product_id );
-
-				// Set claim status.
 				$status = 'draft';
 			} elseif ( get_option( 'hp_claim_enable_moderation' ) ) {
 				$status = 'pending';
@@ -223,7 +218,7 @@ class Claim extends Controller {
 		$claim_id = hp\get_post_id(
 			[
 				'post_type'   => 'hp_listing_claim',
-				'post_status' => [ 'pending', 'publish' ],
+				'post_status' => [ 'draft', 'pending', 'publish' ],
 				'post_parent' => $listing_id,
 				'author'      => get_current_user_id(),
 			]
@@ -231,6 +226,31 @@ class Claim extends Controller {
 
 		// Check claim.
 		if ( 0 === $claim_id ) {
+			return true;
+		} elseif ( get_post_status( $claim_id ) === 'draft' ) {
+
+			// Get product ID.
+			$product_id = 0;
+
+			if ( get_option( 'hp_product_claim' ) && class_exists( 'WooCommerce' ) ) {
+				$product_id = hp\get_post_id(
+					[
+						'post_type'   => 'product',
+						'post_status' => 'publish',
+						'post__in'    => [ absint( get_option( 'hp_product_claim' ) ) ],
+					]
+				);
+			}
+
+			if ( 0 !== $product_id ) {
+
+				// Add product to cart.
+				WC()->cart->empty_cart();
+				WC()->cart->add_to_cart( $product_id );
+
+				return wc_get_page_permalink( 'checkout' );
+			}
+
 			return true;
 		}
 
