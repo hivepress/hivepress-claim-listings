@@ -33,9 +33,12 @@ final class Claim {
 			// Update order status.
 			add_action( 'woocommerce_order_status_changed', [ $this, 'update_order_status' ], 10, 4 );
 
-			// todo.
-			add_filter( 'hivepress/v1/forms/listing_claim_submit', [ $this, 'filter_form_args' ] );
+			// Redirect order page.
+			add_action( 'template_redirect', [ $this, 'redirect_order_page' ] );
 		}
+
+		// Filter form arguments.
+		add_filter( 'hivepress/v1/forms/listing_claim_submit', [ $this, 'filter_form_args' ] );
 
 		if ( is_admin() ) {
 
@@ -58,31 +61,6 @@ final class Claim {
 			add_filter( 'hivepress/v1/templates/listing_view_page', [ $this, 'alter_listing_view_block' ] );
 			add_filter( 'hivepress/v1/templates/listing_view_page', [ $this, 'alter_listing_view_page' ] );
 		}
-	}
-
-	// todo.
-	public function filter_form_args( $form ) {
-
-		// Get product.
-		$product = false;
-
-		if ( get_option( 'hp_product_claim' ) ) {
-			$product = wc_get_product( get_option( 'hp_product_claim' ) );
-		}
-
-		if ( ! empty( $product ) ) {
-
-			// Unset message.
-			$form['message'] = null;
-
-			// Set redirect URL.
-			$form['redirect'] = wc_get_page_permalink( 'checkout' );
-
-			// Set button caption.
-			$form['button']['label'] = sprintf( esc_html__( 'Claim for %s', 'hivepress-claim-listings' ), wp_strip_all_tags( wc_price( $product->get_price() ) ) );
-		}
-
-		return $form;
 	}
 
 	/**
@@ -183,16 +161,7 @@ final class Claim {
 		// Get product ID.
 		$product_id = absint( get_option( 'hp_product_claim' ) );
 
-		if ( 0 !== $product_id && in_array(
-			$product_id,
-			array_map(
-				function( $item ) {
-					return $item->get_product_id();
-				},
-				$order->get_items()
-			),
-			true
-		) ) {
+		if ( 0 !== $product_id && in_array( $product_id, $this->get_product_ids( $order ), true ) ) {
 
 			// Get claim ID.
 			$claim_id = hp\get_post_id(
@@ -227,6 +196,68 @@ final class Claim {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Redirects order page.
+	 */
+	public function redirect_order_page() {
+		if ( is_wc_endpoint_url( 'order-received' ) ) {
+
+			// Get product ID.
+			$product_id = absint( get_option( 'hp_product_claim' ) );
+
+			if ( 0 !== $product_id ) {
+
+				// Get order.
+				$order = wc_get_order( get_query_var( 'order-received' ) );
+
+				if ( ! empty( $order ) && in_array( $order->get_status(), [ 'processing', 'completed' ], true ) && in_array( $product_id, $this->get_product_ids( $order ), true ) ) {
+					// todo redirect.
+					echo '123';
+					die();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Filters form arguments.
+	 *
+	 * @param array $form Form arguments.
+	 * @return array
+	 */
+	public function filter_form_args( $form ) {
+
+		// Get product.
+		$product = false;
+
+		if ( get_option( 'hp_product_claim' ) && class_exists( 'WooCommerce' ) ) {
+			$product = wc_get_product( get_option( 'hp_product_claim' ) );
+		}
+
+		if ( ! empty( $product ) || ! get_option( 'hp_claim_enable_moderation' ) ) {
+
+			// Unset message.
+			$form['message'] = null;
+		}
+
+		if ( ! empty( $product ) ) {
+
+			// Set redirect URL.
+			$form['redirect'] = wc_get_page_permalink( 'checkout' );
+
+			// Set button caption.
+			$form['button']['label'] = sprintf( esc_html__( 'Claim for %s', 'hivepress-claim-listings' ), wp_strip_all_tags( wc_price( $product->get_price() ) ) );
+		} elseif ( ! get_option( 'hp_claim_enable_moderation' ) ) {
+
+			// Set redirect URL.
+			// todo.
+			// Set button caption.
+			$form['button']['label'] = esc_html__( 'Claim Listing', 'hivepress-claim-listing' );
+		}
+
+		return $form;
 	}
 
 	/**
@@ -415,6 +446,21 @@ final class Claim {
 				'post_status' => 'publish',
 				'post__in'    => [ absint( wp_get_post_parent_id( $claim_id ) ) ],
 			]
+		);
+	}
+
+	/**
+	 * Gets product IDs.
+	 *
+	 * @param WC_Order $order Order object.
+	 * @return array
+	 */
+	protected function get_product_ids( $order ) {
+		return array_map(
+			function( $item ) {
+				return $item->get_product_id();
+			},
+			$order->get_items()
 		);
 	}
 }
