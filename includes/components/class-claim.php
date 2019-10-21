@@ -37,6 +37,9 @@ final class Claim {
 			// Update order status.
 			add_action( 'woocommerce_order_status_changed', [ $this, 'update_order_status' ], 10, 4 );
 
+			// Enable order endpoint.
+			add_filter( 'woocommerce_is_rest_api_request', [ $this, 'enable_order_endpoint' ] );
+
 			// Redirect order page.
 			add_action( 'template_redirect', [ $this, 'redirect_order_page' ] );
 		}
@@ -243,6 +246,22 @@ final class Claim {
 	}
 
 	/**
+	 * Enables order endpoint.
+	 *
+	 * @param bool $is_rest REST flag.
+	 * @return bool
+	 */
+	public function enable_order_endpoint( $is_rest ) {
+		$endpoint = '/hivepress/v1/claims';
+
+		if ( substr( $_SERVER['REQUEST_URI'], -strlen( $endpoint ) ) === $endpoint ) {
+			return false;
+		}
+
+		return $is_rest;
+	}
+
+	/**
 	 * Redirects order page.
 	 */
 	public function redirect_order_page() {
@@ -286,19 +305,10 @@ final class Claim {
 			$form['message'] = null;
 		}
 
+		// Set button caption.
 		if ( ! empty( $product ) ) {
-
-			// Set redirect URL.
-			$form['redirect'] = wc_get_page_permalink( 'checkout' );
-
-			// Set button caption.
 			$form['button']['label'] = sprintf( esc_html__( 'Claim for %s', 'hivepress-claim-listings' ), wp_strip_all_tags( wc_price( $product->get_price() ) ) );
 		} elseif ( ! get_option( 'hp_claim_enable_moderation' ) ) {
-
-			// Set redirect URL.
-			$form['redirect'] = Controllers\Claim::get_url( 'submit_complete' );
-
-			// Set button caption.
 			$form['button']['label'] = esc_html__( 'Claim Listing', 'hivepress-claim-listing' );
 		}
 

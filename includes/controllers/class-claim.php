@@ -142,7 +142,7 @@ class Claim extends Controller {
 			// Get product ID.
 			$product_id = 0;
 
-			if ( get_option( 'hp_product_claim' ) ) {
+			if ( get_option( 'hp_product_claim' ) && class_exists( 'WooCommerce' ) ) {
 				$product_id = hp\get_post_id(
 					[
 						'post_type'   => 'product',
@@ -152,8 +152,13 @@ class Claim extends Controller {
 				);
 			}
 
-			// Set claim status.
 			if ( 0 !== $product_id ) {
+
+				// Add product to cart.
+				WC()->cart->empty_cart();
+				WC()->cart->add_to_cart( $product_id );
+
+				// Set claim status.
 				$status = 'draft';
 			} elseif ( get_option( 'hp_claim_enable_moderation' ) ) {
 				$status = 'pending';

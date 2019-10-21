@@ -7,7 +7,6 @@
 
 namespace HivePress\Forms;
 
-// todo.
 use HivePress\Helpers as hp;
 
 // Exit if accessed directly.
@@ -75,13 +74,6 @@ class Listing_Claim_Submit extends Model_Form {
 	 * @var bool
 	 */
 	protected static $captcha = false;
-
-	/**
-	 * Form redirect.
-	 *
-	 * @var mixed
-	 */
-	protected static $redirect = false;
 
 	/**
 	 * Form fields.
