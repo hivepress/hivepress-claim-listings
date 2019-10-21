@@ -75,13 +75,17 @@ final class Claim {
 	 */
 	public function update_claim( $claim_id, $claim ) {
 		if ( 'hp_listing_claim' === $claim->post_type ) {
+
+			// Remove action.
+			remove_action( 'save_post', [ $this, 'update_claim' ], 99 );
+
 			if ( metadata_exists( 'post', $claim_id, 'hp_listing' ) ) {
 
 				// Set listing ID.
 				wp_update_post(
 					[
 						'ID'          => $claim_id,
-						'post_parent' => absint( get_post_meta( $claim_id, 'hp_listing' ) ),
+						'post_parent' => absint( get_post_meta( $claim_id, 'hp_listing', true ) ),
 					]
 				);
 
@@ -90,11 +94,13 @@ final class Claim {
 			}
 
 			// Set claim title.
-			if ( '#' . $claim_id !== $claim->post_title ) {
+			$title = '#' . $claim_id;
+
+			if ( $claim->post_title !== $title ) {
 				wp_update_post(
 					[
 						'ID'         => $claim_id,
-						'post_title' => '#' . $claim_id,
+						'post_title' => $title,
 					]
 				);
 			}
