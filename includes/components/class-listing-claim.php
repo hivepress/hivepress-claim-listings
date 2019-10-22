@@ -301,7 +301,7 @@ final class Listing_Claim {
 		if ( ! empty( $product ) ) {
 			$form['button']['label'] = sprintf( esc_html__( 'Claim for %s', 'hivepress-claim-listings' ), wp_strip_all_tags( wc_price( $product->get_price() ) ) );
 		} elseif ( ! get_option( 'hp_listing_claim_enable_moderation' ) ) {
-			$form['button']['label'] = esc_html__( 'Claim Listing', 'hivepress-claim-listing' );
+			$form['button']['label'] = esc_html__( 'Claim Listing', 'hivepress-claim-listings' );
 		}
 
 		return $form;
