@@ -118,7 +118,7 @@ final class Listing_Claim {
 	 * @param WP_Post $claim Claim object.
 	 */
 	public function update_claim_status( $new_status, $old_status, $claim ) {
-		if ( 'hp_listing_claim' === $claim->post_type ) {
+		if ( 'hp_listing_claim' === $claim->post_type && $new_status !== $old_status ) {
 
 			// Get listing ID.
 			$listing_id = $this->get_listing_id( $claim->ID );
@@ -153,14 +153,15 @@ final class Listing_Claim {
 						if ( 'publish' === $new_status ) {
 
 							// Approve claim.
+							update_post_meta( $listing_id, 'hp_verified', '1' );
+							update_post_meta( $claim->ID, 'hp_author', get_post_field( 'post_author', $listing_id ) );
+
 							wp_update_post(
 								[
 									'ID'          => $listing_id,
 									'post_author' => $user->ID,
 								]
 							);
-
-							update_post_meta( $listing_id, 'hp_verified', '1' );
 
 							// Send email.
 							( new Emails\Listing_Claim_Approve(
@@ -176,14 +177,16 @@ final class Listing_Claim {
 						} else {
 
 							// Reject claim.
-							wp_update_post(
-								[
-									'ID'          => $listing_id,
-									'post_author' => 0,
-								]
-							);
-
 							delete_post_meta( $listing_id, 'hp_verified' );
+
+							if ( absint( get_post_field( 'post_author', $listing_id ) ) === $user->ID ) {
+								wp_update_post(
+									[
+										'ID'          => $listing_id,
+										'post_author' => absint( get_post_meta( $claim->ID, 'hp_author', true ) ),
+									]
+								);
+							}
 
 							// Send email.
 							( new Emails\Listing_Claim_Reject(
@@ -386,7 +389,7 @@ final class Listing_Claim {
 	public function filter_editor_settings( $settings ) {
 		global $pagenow, $post;
 
-		if ( 'post.php' === $pagenow && 'hp_listing_claim' === $post->post_type ) {
+		if ( in_array( $pagenow, [ 'post.php', 'post-new.php' ], true ) && 'hp_listing_claim' === $post->post_type ) {
 			$settings = array_merge(
 				$settings,
 				[
@@ -407,27 +410,23 @@ final class Listing_Claim {
 	 * @return array
 	 */
 	public function alter_listing_view_block( $template ) {
-		if ( get_post_meta( get_the_ID(), 'hp_verified', true ) ) {
-			$template = hp\merge_trees(
-				$template,
-				[
-					'blocks' => [
-						'listing_details_primary' => [
-							'blocks' => [
-								'listing_verified_badge' => [
-									'type'     => 'element',
-									'filepath' => 'listing/view/listing-verified-badge',
-									'order'    => 10,
-								],
+		return hp\merge_trees(
+			$template,
+			[
+				'blocks' => [
+					'listing_title' => [
+						'blocks' => [
+							'listing_verified_badge' => [
+								'type'     => 'element',
+								'filepath' => 'listing/view/listing-verified-badge',
+								'order'    => 20,
 							],
 						],
 					],
 				],
-				'blocks'
-			);
-		}
-
-		return $template;
+			],
+			'blocks'
+		);
 	}
 
 	/**
