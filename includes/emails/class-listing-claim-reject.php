@@ -4,7 +4,7 @@
  *
  * @package HivePress\Emails
  */
-// todo.
+
 namespace HivePress\Emails;
 
 use HivePress\Helpers as hp;
@@ -48,8 +48,8 @@ class Listing_Claim_Reject extends Email {
 	public static function init( $args = [] ) {
 		$args = hp\merge_arrays(
 			[
-				'subject' => esc_html__( 'Listing Rejected', 'hivepress' ),
-				'body'    => hp\sanitize_html( __( 'Hi, %user_name%! Unfortunately, your listing "%listing_title%" has been rejected.', 'hivepress' ) ),
+				'subject' => esc_html__( 'Claim Rejected', 'hivepress-claim-listings' ),
+				'body'    => hp\sanitize_html( __( 'Hi, %user_name%! Unfortunately, your claim for listing "%listing_title%" has been rejected.', 'hivepress-claim-listings' ) ),
 			],
 			$args
 		);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Claim controller.
+ * Listing claim controller.
  *
  * @package HivePress\Controllers
  */
@@ -16,11 +16,11 @@ use HivePress\Blocks;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Claim controller class.
+ * Listing claim controller class.
  *
- * @class Claim
+ * @class Listing_Claim
  */
-class Claim extends Controller {
+class Listing_Claim extends Controller {
 
 	/**
 	 * Controller name.
@@ -46,7 +46,7 @@ class Claim extends Controller {
 			[
 				'routes' => [
 					[
-						'path'      => '/claims',
+						'path'      => '/listing-claims',
 						'rest'      => true,
 
 						'endpoints' => [
@@ -60,8 +60,8 @@ class Claim extends Controller {
 					'submit_complete' => [
 						'title'    => esc_html__( 'Claim Submitted', 'hivepress-claim-listings' ),
 						'path'     => '/claim-listing/(?P<listing_id>\d+)/complete',
-						'redirect' => 'redirect_listing_claim_complete_page',
-						'action'   => 'render_listing_claim_complete_page',
+						'redirect' => 'redirect_listing_claim_submit_complete_page',
+						'action'   => 'render_listing_claim_submit_complete_page',
 					],
 				],
 			],
@@ -138,24 +138,9 @@ class Claim extends Controller {
 		if ( $request->get_param( 'status' ) && current_user_can( 'edit_users' ) ) {
 			$status = sanitize_key( $request->get_param( 'status' ) );
 		} else {
-
-			// Get product ID.
-			$product_id = 0;
-
-			if ( get_option( 'hp_product_claim' ) && class_exists( 'WooCommerce' ) ) {
-				$product_id = hp\get_post_id(
-					[
-						'post_type'   => 'product',
-						'post_status' => 'publish',
-						'post__in'    => [ absint( get_option( 'hp_product_claim' ) ) ],
-					]
-				);
-			}
-
-			// Set claim status.
-			if ( 0 !== $product_id ) {
+			if ( class_exists( 'WooCommerce' ) && get_option( 'hp_product_listing_claim' ) ) {
 				$status = 'draft';
-			} elseif ( get_option( 'hp_claim_enable_moderation' ) ) {
+			} elseif ( get_option( 'hp_listing_claim_enable_moderation' ) ) {
 				$status = 'pending';
 			}
 		}
@@ -189,11 +174,11 @@ class Claim extends Controller {
 	}
 
 	/**
-	 * Redirects listing claim complete page.
+	 * Redirects listing claim submit complete page.
 	 *
 	 * @return mixed
 	 */
-	public function redirect_listing_claim_complete_page() {
+	public function redirect_listing_claim_submit_complete_page() {
 
 		// Check authentication.
 		if ( ! is_user_logged_in() ) {
@@ -209,7 +194,6 @@ class Claim extends Controller {
 			]
 		);
 
-		// Check listing.
 		if ( 0 === $listing_id ) {
 			return true;
 		}
@@ -224,29 +208,14 @@ class Claim extends Controller {
 			]
 		);
 
-		// Check claim.
 		if ( 0 === $claim_id ) {
 			return true;
 		} elseif ( get_post_status( $claim_id ) === 'draft' ) {
-
-			// Get product ID.
-			$product_id = 0;
-
-			if ( get_option( 'hp_product_claim' ) && class_exists( 'WooCommerce' ) ) {
-				$product_id = hp\get_post_id(
-					[
-						'post_type'   => 'product',
-						'post_status' => 'publish',
-						'post__in'    => [ absint( get_option( 'hp_product_claim' ) ) ],
-					]
-				);
-			}
-
-			if ( 0 !== $product_id ) {
+			if ( class_exists( 'WooCommerce' ) && get_option( 'hp_product_listing_claim' ) ) {
 
 				// Add product to cart.
 				WC()->cart->empty_cart();
-				WC()->cart->add_to_cart( $product_id );
+				WC()->cart->add_to_cart( get_option( 'hp_product_listing_claim' ) );
 
 				return wc_get_page_permalink( 'checkout' );
 			}
@@ -258,14 +227,14 @@ class Claim extends Controller {
 	}
 
 	/**
-	 * Renders listing claim complete page.
+	 * Renders listing claim submit complete page.
 	 *
 	 * @return string
 	 */
-	public function render_listing_claim_complete_page() {
+	public function render_listing_claim_submit_complete_page() {
 		return ( new Blocks\Template(
 			[
-				'template' => 'listing_claim_complete_page',
+				'template' => 'listing_claim_submit_complete_page',
 
 				'context'  => [
 					'listing' => Models\Listing::get( get_query_var( 'hp_listing_id' ) ),

@@ -1,6 +1,6 @@
 <?php
 /**
- * Claim component.
+ * Listing claim component.
  *
  * @package HivePress\Components
  */
@@ -15,11 +15,11 @@ use HivePress\Controllers;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Claim component class.
+ * Listing claim component class.
  *
- * @class Claim
+ * @class Listing_Claim
  */
-final class Claim {
+final class Listing_Claim {
 
 	/**
 	 * Class constructor.
@@ -63,7 +63,7 @@ final class Claim {
 			add_filter( 'hivepress/v1/templates/listing_view_page', [ $this, 'alter_listing_view_page' ] );
 
 			// Set page title.
-			add_filter( 'hivepress/v1/controllers/claim/routes/submit_complete', [ $this, 'set_page_title' ] );
+			add_filter( 'hivepress/v1/controllers/listing_claim/routes/submit_complete', [ $this, 'set_page_title' ] );
 		}
 	}
 
@@ -79,15 +79,18 @@ final class Claim {
 			// Remove action.
 			remove_action( 'save_post', [ $this, 'update_claim' ], 99 );
 
-			if ( metadata_exists( 'post', $claim_id, 'hp_listing' ) ) {
+			// Set listing ID.
+			$listing_id = absint( get_post_meta( $claim_id, 'hp_listing', true ) );
 
-				// Set listing ID.
-				wp_update_post(
-					[
-						'ID'          => $claim_id,
-						'post_parent' => absint( get_post_meta( $claim_id, 'hp_listing', true ) ),
-					]
-				);
+			if ( 0 !== $listing_id ) {
+				if ( $claim->post_parent !== $listing_id ) {
+					wp_update_post(
+						[
+							'ID'          => $claim_id,
+							'post_parent' => $listing_id,
+						]
+					);
+				}
 
 				// Delete meta value.
 				delete_post_meta( $claim_id, 'hp_listing' );
@@ -166,7 +169,7 @@ final class Claim {
 									'tokens'    => [
 										'user_name'     => $user->display_name,
 										'listing_title' => get_the_title( $listing_id ),
-										'listing_url'   => get_permalink( $listing_id ),
+										'listing_url'   => Controllers\Listing::get_url( 'edit_listing', [ 'listing_id' => $listing_id ] ),
 									],
 								]
 							) )->send();
@@ -210,40 +213,32 @@ final class Claim {
 	public function update_order_status( $order_id, $old_status, $new_status, $order ) {
 
 		// Get product ID.
-		$product_id = absint( get_option( 'hp_product_claim' ) );
+		$product_id = absint( get_option( 'hp_product_listing_claim' ) );
 
 		if ( 0 !== $product_id && in_array( $product_id, $this->get_product_ids( $order ), true ) ) {
 
 			// Get claim ID.
-			$claim_id = hp\get_post_id(
-				[
-					'post_type'   => 'hp_listing_claim',
-					'post_status' => [ 'draft', 'publish' ],
-					'author'      => $order->get_user_id(),
-				]
-			);
+			$claim_id = $this->get_claim_id( $order->get_user_id(), [ 'draft', 'publish' ] );
 
 			if ( 0 !== $claim_id ) {
-				if ( $this->get_listing_id( $claim_id ) !== 0 ) {
-					if ( in_array( $new_status, [ 'processing', 'completed' ], true ) ) {
+				if ( in_array( $new_status, [ 'processing', 'completed' ], true ) ) {
 
-						// Submit claim.
-						wp_update_post(
-							[
-								'ID'          => $claim_id,
-								'post_status' => get_option( 'hp_claim_enable_moderation' ) ? 'pending' : 'publish',
-							]
-						);
-					} elseif ( in_array( $new_status, [ 'failed', 'cancelled', 'refunded' ], true ) ) {
+					// Submit claim.
+					wp_update_post(
+						[
+							'ID'          => $claim_id,
+							'post_status' => get_option( 'hp_listing_claim_enable_moderation' ) ? 'pending' : 'publish',
+						]
+					);
+				} elseif ( in_array( $new_status, [ 'failed', 'cancelled', 'refunded' ], true ) ) {
 
-						// Reject claim.
-						wp_update_post(
-							[
-								'ID'          => $claim_id,
-								'post_status' => 'trash',
-							]
-						);
-					}
+					// Reject claim.
+					wp_update_post(
+						[
+							'ID'          => $claim_id,
+							'post_status' => 'trash',
+						]
+					);
 				}
 			}
 		}
@@ -256,17 +251,24 @@ final class Claim {
 		if ( is_wc_endpoint_url( 'order-received' ) ) {
 
 			// Get product ID.
-			$product_id = absint( get_option( 'hp_product_claim' ) );
+			$product_id = absint( get_option( 'hp_product_listing_claim' ) );
 
 			if ( 0 !== $product_id ) {
 
 				// Get order.
 				$order = wc_get_order( get_query_var( 'order-received' ) );
 
-				if ( ! empty( $order ) && in_array( $order->get_status(), [ 'processing', 'completed' ], true ) && in_array( $product_id, $this->get_product_ids( $order ), true ) ) {
-					wp_safe_redirect( Controllers\Claim::get_url( 'submit_complete' ) );
+				if ( ! empty( $order ) && in_array( $product_id, $this->get_product_ids( $order ), true ) && in_array( $order->get_status(), [ 'processing', 'completed' ], true ) ) {
 
-					exit();
+					// Get claim ID.
+					$claim_id = $this->get_claim_id( $order->get_user_id(), [ 'pending', 'publish' ] );
+
+					// Redirect page.
+					if ( 0 !== $claim_id ) {
+						wp_safe_redirect( Controllers\Listing_Claim::get_url( 'submit_complete', [ 'listing_id' => wp_get_post_parent_id( $claim_id ) ] ) );
+
+						exit();
+					}
 				}
 			}
 		}
@@ -283,20 +285,19 @@ final class Claim {
 		// Get product.
 		$product = false;
 
-		if ( get_option( 'hp_product_claim' ) && class_exists( 'WooCommerce' ) ) {
-			$product = wc_get_product( get_option( 'hp_product_claim' ) );
+		if ( class_exists( 'WooCommerce' ) && get_option( 'hp_product_listing_claim' ) ) {
+			$product = wc_get_product( get_option( 'hp_product_listing_claim' ) );
 		}
 
-		if ( ! empty( $product ) || ! get_option( 'hp_claim_enable_moderation' ) ) {
-
-			// Unset message.
+		// Unset message.
+		if ( ! get_option( 'hp_listing_claim_enable_moderation' ) || ! empty( $product ) ) {
 			$form['message'] = null;
 		}
 
 		// Set button caption.
 		if ( ! empty( $product ) ) {
 			$form['button']['label'] = sprintf( esc_html__( 'Claim for %s', 'hivepress-claim-listings' ), wp_strip_all_tags( wc_price( $product->get_price() ) ) );
-		} elseif ( ! get_option( 'hp_claim_enable_moderation' ) ) {
+		} elseif ( ! get_option( 'hp_listing_claim_enable_moderation' ) ) {
 			$form['button']['label'] = esc_html__( 'Claim Listing', 'hivepress-claim-listing' );
 		}
 
@@ -383,9 +384,9 @@ final class Claim {
 	 * @return array
 	 */
 	public function filter_editor_settings( $settings ) {
-		$current_screen = get_current_screen();
+		global $pagenow, $post;
 
-		if ( ! is_null( $current_screen ) && 'hp_listing_claim' === $current_screen->post_type ) {
+		if ( 'post.php' === $pagenow && 'hp_listing_claim' === $post->post_type ) {
 			$settings = array_merge(
 				$settings,
 				[
@@ -407,8 +408,6 @@ final class Claim {
 	 */
 	public function alter_listing_view_block( $template ) {
 		if ( get_post_meta( get_the_ID(), 'hp_verified', true ) ) {
-
-			// Add verified badge.
 			$template = hp\merge_trees(
 				$template,
 				[
@@ -444,12 +443,12 @@ final class Claim {
 				'blocks' => [
 					'listing_actions_primary' => [
 						'blocks' => [
-							'listing_claim_modal' => [
+							'listing_claim_submit_modal' => [
 								'type'    => 'modal',
 								'caption' => esc_html__( 'Claim Listing', 'hivepress-claim-listings' ),
 
 								'blocks'  => [
-									'listing_claim_form' => [
+									'listing_claim_submit_form' => [
 										'type'       => 'listing_claim_submit_form',
 										'order'      => 10,
 
@@ -460,9 +459,9 @@ final class Claim {
 								],
 							],
 
-							'listing_claim_link'  => [
+							'listing_claim_submit_link'  => [
 								'type'     => 'element',
-								'filepath' => 'listing/view/page/listing-claim-link',
+								'filepath' => 'listing/view/page/listing-claim-submit-link',
 								'order'    => 30,
 							],
 						],
@@ -497,6 +496,23 @@ final class Claim {
 		}
 
 		return $route;
+	}
+
+	/**
+	 * Gets claim ID.
+	 *
+	 * @param int   $user_id User ID.
+	 * @param mixed $status Claim status.
+	 * @return int
+	 */
+	protected function get_claim_id( $user_id, $status ) {
+		return hp\get_post_id(
+			[
+				'post_type'   => 'hp_listing_claim',
+				'post_status' => $status,
+				'author'      => $user_id,
+			]
+		);
 	}
 
 	/**

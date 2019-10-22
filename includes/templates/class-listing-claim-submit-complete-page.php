@@ -1,9 +1,9 @@
 <?php
 /**
- * Listing claim complete page template.
+ * Listing claim submit complete page template.
  *
- * @template listing_claim_complete_page
- * @description Listing claim page (completed).
+ * @template listing_claim_submit_complete_page
+ * @description Listing claim submission page (completed).
  * @package HivePress\Templates
  */
 
@@ -15,11 +15,11 @@ use HivePress\Helpers as hp;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Listing claim complete page template class.
+ * Listing claim submit complete page template class.
  *
- * @class Listing_Claim_Complete_Page
+ * @class Listing_Claim_Submit_Complete_Page
  */
-class Listing_Claim_Complete_Page extends Listing_Submit_Page {
+class Listing_Claim_Submit_Complete_Page extends Listing_Submit_Page {
 
 	/**
 	 * Template name.
@@ -46,9 +46,9 @@ class Listing_Claim_Complete_Page extends Listing_Submit_Page {
 				'blocks' => [
 					'page_content' => [
 						'blocks' => [
-							'listing_complete_message' => [
+							'listing_claim_complete_message' => [
 								'type'     => 'element',
-								'filepath' => 'listing/claim/listing-complete-message',
+								'filepath' => 'listing-claim/submit/listing-claim-complete-message',
 								'order'    => 10,
 							],
 						],

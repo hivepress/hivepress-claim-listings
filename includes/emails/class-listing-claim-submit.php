@@ -4,7 +4,7 @@
  *
  * @package HivePress\Emails
  */
-// todo.
+
 namespace HivePress\Emails;
 
 use HivePress\Helpers as hp;
@@ -48,8 +48,8 @@ class Listing_Claim_Submit extends Email {
 	public static function init( $args = [] ) {
 		$args = hp\merge_arrays(
 			[
-				'subject' => esc_html__( 'Listing Submitted', 'hivepress' ),
-				'body'    => hp\sanitize_html( __( 'A new listing "%listing_title%" has been submitted, click on the following link to view it: %listing_url%', 'hivepress' ) ),
+				'subject' => esc_html__( 'Claim Submitted', 'hivepress-claim-listings' ),
+				'body'    => hp\sanitize_html( __( 'A new claim for listing "%listing_title%" %1$claim_url% has been submitted with the following details: %2$claim_details%', 'hivepress-claim-listings' ) ),
 			],
 			$args
 		);

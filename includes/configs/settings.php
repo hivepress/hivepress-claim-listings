@@ -18,7 +18,7 @@ return [
 				'order'  => 30,
 
 				'fields' => [
-					'product_claim'           => [
+					'product_listing_claim'           => [
 						'label'       => esc_html__( 'WooCommerce Product', 'hivepress-claim-listings' ),
 						'description' => esc_html__( 'Choose a WooCommerce product that must be purchased in order to submit a claim.', 'hivepress-claim-listings' ),
 						'type'        => 'select',
@@ -27,7 +27,7 @@ return [
 						'order'       => 10,
 					],
 
-					'claim_enable_moderation' => [
+					'listing_claim_enable_moderation' => [
 						'label'   => esc_html__( 'Moderation', 'hivepress-claim-listings' ),
 						'caption' => esc_html__( 'Manually approve new claims', 'hivepress-claim-listings' ),
 						'type'    => 'checkbox',
@@ -43,7 +43,7 @@ return [
 						'label'       => esc_html__( 'Claim Approved', 'hivepress-claim-listings' ),
 						'description' => esc_html__( 'This email is sent to users when claim is approved, the following tokens are available: %user_name%, %listing_title%, %listing_url%.', 'hivepress-claim-listings' ),
 						'type'        => 'textarea',
-						'default'     => hp\sanitize_html( __( 'Hi, %user_name%! Your claim for listing "%listing_title%" has been approved, click on the following link to view it: %listing_url%', 'hivepress-claim-listings' ) ),
+						'default'     => hp\sanitize_html( __( 'Hi, %user_name%! Your claim for listing "%listing_title%" has been approved, click on the following link to edit it: %listing_url%', 'hivepress-claim-listings' ) ),
 						'required'    => true,
 						'order'       => 30,
 					],

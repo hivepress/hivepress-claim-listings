@@ -4,7 +4,7 @@
  *
  * @package HivePress\Emails
  */
-// todo.
+
 namespace HivePress\Emails;
 
 use HivePress\Helpers as hp;
@@ -48,8 +48,8 @@ class Listing_Claim_Approve extends Email {
 	public static function init( $args = [] ) {
 		$args = hp\merge_arrays(
 			[
-				'subject' => esc_html__( 'Listing Approved', 'hivepress' ),
-				'body'    => hp\sanitize_html( __( 'Hi, %user_name%! Your listing "%listing_title%" has been approved, click on the following link to view it: %listing_url%', 'hivepress' ) ),
+				'subject' => esc_html__( 'Claim Approved', 'hivepress-claim-listings' ),
+				'body'    => hp\sanitize_html( __( 'Hi, %user_name%! Your claim for listing "%listing_title%" has been approved, click on the following link to edit it: %listing_url%', 'hivepress-claim-listings' ) ),
 			],
 			$args
 		);

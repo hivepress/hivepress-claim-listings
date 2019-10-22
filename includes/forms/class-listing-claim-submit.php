@@ -101,7 +101,7 @@ class Listing_Claim_Submit extends Model_Form {
 				'description' => esc_html__( "Please provide details that will help us verify that you're the owner of this listing.", 'hivepress-claim-listings' ),
 				'message'     => esc_html__( 'Your claim has been submitted.', 'hivepress-claim-listings' ),
 				'model'       => 'listing_claim',
-				'action'      => hp\get_rest_url( '/claims' ),
+				'action'      => hp\get_rest_url( '/listing-claims' ),
 
 				'fields'      => [
 					'details'    => [
