@@ -11,8 +11,8 @@ use HivePress\Helpers as hp;
 defined( 'ABSPATH' ) || exit;
 
 return [
-	'listing_claim_details' => [
-		'title'  => esc_html__( 'Details', 'hivepress-claim-listings' ),
+	'listing_claim_settings' => [
+		'title'  => esc_html__( 'Settings', 'hivepress-claim-listings' ),
 		'screen' => 'listing_claim',
 		'fields' => [],
 	],

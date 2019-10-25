@@ -51,7 +51,7 @@ final class Listing_Claim {
 			add_action( 'manage_hp_listing_claim_posts_custom_column', [ $this, 'render_admin_columns' ], 10, 2 );
 
 			// Add meta fields.
-			add_filter( 'hivepress/v1/meta_boxes/listing_claim_details', [ $this, 'add_meta_fields' ] );
+			add_filter( 'hivepress/v1/meta_boxes/listing_claim_settings', [ $this, 'add_meta_fields' ] );
 
 			// Filter editor settings.
 			add_filter( 'wp_editor_settings', [ $this, 'filter_editor_settings' ] );
