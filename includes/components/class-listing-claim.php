@@ -154,7 +154,7 @@ final class Listing_Claim {
 
 							// Approve claim.
 							update_post_meta( $listing_id, 'hp_verified', '1' );
-							update_post_meta( $claim->ID, 'hp_author', get_post_field( 'post_author', $listing_id ) );
+							update_post_meta( $claim->ID, 'hp_user', get_post_field( 'post_author', $listing_id ) );
 
 							wp_update_post(
 								[
@@ -183,7 +183,7 @@ final class Listing_Claim {
 								wp_update_post(
 									[
 										'ID'          => $listing_id,
-										'post_author' => absint( get_post_meta( $claim->ID, 'hp_author', true ) ),
+										'post_author' => absint( get_post_meta( $claim->ID, 'hp_user', true ) ),
 									]
 								);
 							}
