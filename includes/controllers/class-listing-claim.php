@@ -129,7 +129,7 @@ class Listing_Claim extends Controller {
 		);
 
 		if ( 0 !== $claim_id ) {
-			return hp\rest_error( 400, esc_html__( "You've already submitted a claim for this listing", 'hivepress-claim-listings' ) );
+			return hp\rest_error( 400, esc_html__( "You've already submitted a claim for this listing.", 'hivepress-claim-listings' ) );
 		}
 
 		// Get claim status.
