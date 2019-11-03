@@ -58,8 +58,6 @@ final class Listing_Claim {
 		} else {
 
 			// Alter templates.
-			add_filter( 'hivepress/v1/templates/listing_view_block', [ $this, 'alter_listing_view_block' ] );
-			add_filter( 'hivepress/v1/templates/listing_view_page', [ $this, 'alter_listing_view_block' ] );
 			add_filter( 'hivepress/v1/templates/listing_view_page', [ $this, 'alter_listing_view_page' ] );
 
 			// Set page title.
@@ -401,32 +399,6 @@ final class Listing_Claim {
 		}
 
 		return $settings;
-	}
-
-	/**
-	 * Alters listing view block.
-	 *
-	 * @param array $template Template arguments.
-	 * @return array
-	 */
-	public function alter_listing_view_block( $template ) {
-		return hp\merge_trees(
-			$template,
-			[
-				'blocks' => [
-					'listing_title' => [
-						'blocks' => [
-							'listing_verified_badge' => [
-								'type'     => 'element',
-								'filepath' => 'listing/view/listing-verified-badge',
-								'order'    => 20,
-							],
-						],
-					],
-				],
-			],
-			'blocks'
-		);
 	}
 
 	/**
