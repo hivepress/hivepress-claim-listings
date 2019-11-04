@@ -15,7 +15,7 @@ return [
 		'sections' => [
 			'claiming' => [
 				'title'  => esc_html__( 'Claiming', 'hivepress-claim-listings' ),
-				'order'  => 30,
+				'order'  => 40,
 
 				'fields' => [
 					'product_listing_claim'           => [
@@ -45,7 +45,7 @@ return [
 						'type'        => 'textarea',
 						'default'     => hp\sanitize_html( __( 'Hi, %user_name%! Your claim for listing "%listing_title%" has been approved, click on the following link to edit it: %listing_url%', 'hivepress-claim-listings' ) ),
 						'required'    => true,
-						'order'       => 30,
+						'order'       => 40,
 					],
 
 					'email_listing_claim_reject'  => [
@@ -54,7 +54,7 @@ return [
 						'type'        => 'textarea',
 						'default'     => hp\sanitize_html( __( 'Hi, %user_name%! Unfortunately, your claim for listing "%listing_title%" has been rejected.', 'hivepress-claim-listings' ) ),
 						'required'    => true,
-						'order'       => 40,
+						'order'       => 50,
 					],
 				],
 			],

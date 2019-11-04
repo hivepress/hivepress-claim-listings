@@ -77,23 +77,6 @@ final class Listing_Claim {
 			// Remove action.
 			remove_action( 'save_post', [ $this, 'update_claim' ], 99 );
 
-			// Set listing ID.
-			$listing_id = absint( get_post_meta( $claim_id, 'hp_listing', true ) );
-
-			if ( 0 !== $listing_id ) {
-				if ( $claim->post_parent !== $listing_id ) {
-					wp_update_post(
-						[
-							'ID'          => $claim_id,
-							'post_parent' => $listing_id,
-						]
-					);
-				}
-
-				// Delete meta value.
-				delete_post_meta( $claim_id, 'hp_listing' );
-			}
-
 			// Set claim title.
 			$title = '#' . $claim_id;
 
@@ -360,18 +343,12 @@ final class Listing_Claim {
 	 * @return array
 	 */
 	public function add_meta_fields( $meta_box ) {
-		return array_merge(
+		return hp\merge_arrays(
 			$meta_box,
 			[
 				'fields' => [
 					'listing' => [
-						'label'     => esc_html__( 'Listing', 'hivepress-claim-listings' ),
-						'type'      => 'select',
-						'options'   => 'posts',
-						'post_type' => 'hp_listing',
-						'value'     => $this->get_listing_id( get_the_ID() ),
-						'required'  => true,
-						'order'     => 10,
+						'value' => $this->get_listing_id( get_the_ID() ),
 					],
 				],
 			]
