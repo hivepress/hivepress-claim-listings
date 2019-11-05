@@ -27,7 +27,7 @@ final class Listing_Claim {
 	public function __construct() {
 
 		// Update claim.
-		add_action( 'save_post', [ $this, 'update_claim' ], 99, 2 );
+		add_action( 'save_post_hp_listing_claim', [ $this, 'update_claim' ], 99, 2 );
 
 		// Update claim status.
 		add_action( 'transition_post_status', [ $this, 'update_claim_status' ], 10, 3 );
@@ -50,9 +50,6 @@ final class Listing_Claim {
 			add_filter( 'manage_hp_listing_claim_posts_columns', [ $this, 'add_admin_columns' ] );
 			add_action( 'manage_hp_listing_claim_posts_custom_column', [ $this, 'render_admin_columns' ], 10, 2 );
 
-			// Add meta fields.
-			add_filter( 'hivepress/v1/meta_boxes/listing_claim_settings', [ $this, 'add_meta_fields' ] );
-
 			// Filter editor settings.
 			add_filter( 'wp_editor_settings', [ $this, 'filter_editor_settings' ] );
 		} else {
@@ -72,22 +69,20 @@ final class Listing_Claim {
 	 * @param WP_Post $claim Claim object.
 	 */
 	public function update_claim( $claim_id, $claim ) {
-		if ( 'hp_listing_claim' === $claim->post_type ) {
 
-			// Remove action.
-			remove_action( 'save_post', [ $this, 'update_claim' ], 99 );
+		// Remove action.
+		remove_action( 'save_post_hp_listing_claim', [ $this, 'update_claim' ], 99 );
 
-			// Set claim title.
-			$title = '#' . $claim_id;
+		// Set claim title.
+		$title = '#' . $claim_id;
 
-			if ( $claim->post_title !== $title ) {
-				wp_update_post(
-					[
-						'ID'         => $claim_id,
-						'post_title' => $title,
-					]
-				);
-			}
+		if ( $claim->post_title !== $title ) {
+			wp_update_post(
+				[
+					'ID'         => $claim_id,
+					'post_title' => $title,
+				]
+			);
 		}
 	}
 
@@ -334,25 +329,6 @@ final class Listing_Claim {
 
 			echo $output;
 		}
-	}
-
-	/**
-	 * Adds meta fields.
-	 *
-	 * @param array $meta_box Meta box arguments.
-	 * @return array
-	 */
-	public function add_meta_fields( $meta_box ) {
-		return hp\merge_arrays(
-			$meta_box,
-			[
-				'fields' => [
-					'listing' => [
-						'value' => $this->get_listing_id( get_the_ID() ),
-					],
-				],
-			]
-		);
 	}
 
 	/**
