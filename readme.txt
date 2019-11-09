@@ -8,7 +8,7 @@ Stable tag: 1.0.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Claim listings extension for HivePress plugin.
+Charge users for claiming listings.
 
 == Description ==
 
