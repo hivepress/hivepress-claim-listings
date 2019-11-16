@@ -49,9 +49,6 @@ final class Listing_Claim {
 			// Manage admin columns.
 			add_filter( 'manage_hp_listing_claim_posts_columns', [ $this, 'add_admin_columns' ] );
 			add_action( 'manage_hp_listing_claim_posts_custom_column', [ $this, 'render_admin_columns' ], 10, 2 );
-
-			// Filter editor settings.
-			add_filter( 'wp_editor_settings', [ $this, 'filter_editor_settings' ] );
 		} else {
 
 			// Alter templates.
@@ -329,29 +326,6 @@ final class Listing_Claim {
 
 			echo $output;
 		}
-	}
-
-	/**
-	 * Filters editor settings.
-	 *
-	 * @param array $settings Editor settings.
-	 * @return array
-	 */
-	public function filter_editor_settings( $settings ) {
-		global $pagenow, $post;
-
-		if ( in_array( $pagenow, [ 'post.php', 'post-new.php' ], true ) && 'hp_listing_claim' === $post->post_type ) {
-			$settings = array_merge(
-				$settings,
-				[
-					'media_buttons' => false,
-					'tinymce'       => false,
-					'quicktags'     => false,
-				]
-			);
-		}
-
-		return $settings;
 	}
 
 	/**

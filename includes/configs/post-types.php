@@ -15,7 +15,7 @@ return [
 		'public'       => false,
 		'show_ui'      => true,
 		'show_in_menu' => 'edit.php?post_type=hp_listing',
-		'supports'     => [ 'editor', 'author' ],
+		'supports'     => [ 'author' ],
 
 		'labels'       => [
 			'name'               => esc_html__( 'Claims', 'hivepress-claim-listings' ),
