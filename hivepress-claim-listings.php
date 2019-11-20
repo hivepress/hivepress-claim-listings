@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: HivePress Claim Listings
- * Description: Claim listings extension for HivePress plugin.
- * Version: 1.0.0
+ * Description: Charge users for claiming listings.
+ * Version: 1.0.1
  * Author: HivePress
  * Author URI: https://hivepress.io/
  * Text Domain: hivepress-claim-listings
