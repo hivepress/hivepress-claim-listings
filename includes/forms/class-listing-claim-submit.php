@@ -97,8 +97,8 @@ class Listing_Claim_Submit extends Model_Form {
 	public static function init( $args = [] ) {
 		$args = hp\merge_arrays(
 			[
-				'title'       => esc_html__( 'Claim Listing', 'hivepress-claim-listings' ),
-				'description' => esc_html__( "Please provide details that will help us verify that you're the owner of this listing.", 'hivepress-claim-listings' ),
+				'title'       => hivepress()->translator->get_string( 'claim_listing' ),
+				'description' => esc_html__( "Please provide details that will help us verify that you're the owner.", 'hivepress-claim-listings' ),
 				'message'     => esc_html__( 'Your claim has been submitted.', 'hivepress-claim-listings' ),
 				'model'       => 'listing_claim',
 				'action'      => hp\get_rest_url( '/listing-claims' ),

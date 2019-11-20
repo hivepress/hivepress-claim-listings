@@ -274,7 +274,7 @@ final class Listing_Claim {
 		if ( ! empty( $product ) ) {
 			$form['button']['label'] = sprintf( esc_html__( 'Claim for %s', 'hivepress-claim-listings' ), wp_strip_all_tags( wc_price( $product->get_price() ) ) );
 		} elseif ( ! get_option( 'hp_listing_claim_enable_moderation' ) ) {
-			$form['button']['label'] = esc_html__( 'Claim Listing', 'hivepress-claim-listings' );
+			$form['button']['label'] = hivepress()->translator->get_string( 'claim_listing' );
 		}
 
 		return $form;
@@ -290,7 +290,7 @@ final class Listing_Claim {
 		return array_merge(
 			array_slice( $columns, 0, 3, true ),
 			[
-				'listing' => esc_html__( 'Listing', 'hivepress-claim-listings' ),
+				'listing' => hivepress()->translator->get_string( 'listing' ),
 			],
 			array_slice( $columns, 3, null, true )
 		);
@@ -343,7 +343,7 @@ final class Listing_Claim {
 						'blocks' => [
 							'listing_claim_submit_modal' => [
 								'type'    => 'modal',
-								'caption' => esc_html__( 'Claim Listing', 'hivepress-claim-listings' ),
+								'caption' => hivepress()->translator->get_string( 'claim_listing' ),
 
 								'blocks'  => [
 									'listing_claim_submit_form' => [

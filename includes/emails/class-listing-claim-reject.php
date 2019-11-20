@@ -49,7 +49,7 @@ class Listing_Claim_Reject extends Email {
 		$args = hp\merge_arrays(
 			[
 				'subject' => esc_html__( 'Claim Rejected', 'hivepress-claim-listings' ),
-				'body'    => hp\sanitize_html( __( 'Hi, %user_name%! Unfortunately, your claim for listing "%listing_title%" has been rejected.', 'hivepress-claim-listings' ) ),
+				'body'    => hp\sanitize_html( __( 'Hi, %user_name%! Unfortunately, your claim for "%listing_title%" has been rejected.', 'hivepress-claim-listings' ) ),
 			],
 			$args
 		);

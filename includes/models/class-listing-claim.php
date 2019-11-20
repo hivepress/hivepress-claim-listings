@@ -50,7 +50,7 @@ class Listing_Claim extends Post {
 			[
 				'fields'  => [
 					'details'    => [
-						'label'      => esc_html__( 'Details', 'hivepress-claim-listings' ),
+						'label'      => hivepress()->translator->get_string( 'details' ),
 						'type'       => 'textarea',
 						'max_length' => 10240,
 						'required'   => true,
@@ -63,13 +63,13 @@ class Listing_Claim extends Post {
 
 					'user_id'    => [
 						'type'      => 'number',
-						'min_value' => 0,
+						'min_value' => 1,
 						'required'  => true,
 					],
 
 					'listing_id' => [
 						'type'      => 'number',
-						'min_value' => 0,
+						'min_value' => 1,
 						'required'  => true,
 					],
 				],

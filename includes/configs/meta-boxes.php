@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 
 return [
 	'listing_claim_details'  => [
-		'title'  => esc_html__( 'Details', 'hivepress-claim-listings' ),
+		'title'  => hivepress()->translator->get_string( 'details' ),
 		'screen' => 'listing_claim',
 
 		'fields' => [
@@ -26,12 +26,12 @@ return [
 	],
 
 	'listing_claim_settings' => [
-		'title'  => esc_html__( 'Settings', 'hivepress-claim-listings' ),
+		'title'  => hivepress()->translator->get_string( 'settings' ),
 		'screen' => 'listing_claim',
 
 		'fields' => [
 			'listing' => [
-				'label'     => esc_html__( 'Listing', 'hivepress-claim-listings' ),
+				'label'     => hivepress()->translator->get_string( 'listing' ),
 				'alias'     => 'post_parent',
 				'type'      => 'select',
 				'options'   => 'posts',

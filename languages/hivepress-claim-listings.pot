@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HivePress Claim Listings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-22 17:37+0000\n"
+"POT-Creation-Date: 2019-11-20 18:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -15,51 +15,83 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.3.1; wp-5.2.4"
 
-#: includes/emails/class-listing-claim-submit.php:52
-msgid ""
-"A new claim for listing \"%listing_title%\" %claim_url% has been submitted "
-"with the following details: %claim_details%"
+#: includes/components/class-listing-claim.php:275
+#, php-format
+msgid "Claim for %s"
 msgstr ""
 
-#: includes/configs/post-types.php:23
-msgid "Add New Claim"
+#: includes/components/class-listing-claim.php:393
+#: includes/configs/settings.php:43
+#: includes/emails/class-listing-claim-approve.php:51
+msgid "Claim Approved"
 msgstr ""
 
-#: includes/configs/settings.php:23
-msgid ""
-"Choose a WooCommerce product that must be purchased in order to submit a "
-"claim."
+#: includes/configs/post-types.php:21 includes/configs/post-types.php:27
+#: includes/configs/settings.php:17
+msgid "Claims"
 msgstr ""
 
 #: includes/configs/post-types.php:22
 msgid "Claim"
 msgstr ""
 
-#: includes/components/class-listing-claim.php:494
-#: includes/configs/settings.php:43
-#: includes/emails/class-listing-claim-approve.php:51
-msgid "Claim Approved"
+#: includes/configs/post-types.php:23 includes/configs/post-types.php:25
+msgid "Add Claim"
 msgstr ""
 
-#: includes/components/class-listing-claim.php:302
-#, php-format
-msgid "Claim for %s"
+#: includes/configs/post-types.php:24
+msgid "Edit Claim"
 msgstr ""
 
-#: includes/components/class-listing-claim.php:304
-#: includes/components/class-listing-claim.php:447
-#: includes/forms/class-listing-claim-submit.php:100
-#: templates/listing/view/page/listing-claim-submit-link.php:7
-msgid "Claim Listing"
+#: includes/configs/post-types.php:26
+msgid "View Claim"
 msgstr ""
 
-#. Description of the plugin
-msgid "Claim listings extension for HivePress plugin."
+#: includes/configs/post-types.php:28
+msgid "Search Claims"
 msgstr ""
 
-#: includes/configs/settings.php:52
+#: includes/configs/post-types.php:29 includes/configs/post-types.php:30
+msgid "No Claims Found"
+msgstr ""
+
+#: includes/configs/settings.php:23
+msgid "Choose a product that must be purchased in order to submit a claim."
+msgstr ""
+
+#: includes/configs/settings.php:32
+msgid "Manually approve new claims"
+msgstr ""
+
+#: includes/configs/settings.php:44
+msgid ""
+"This email is sent to users when claim is approved, the following tokens are "
+"available: %user_name%, %listing_title%, %listing_url%."
+msgstr ""
+
+#: includes/configs/settings.php:46
+#: includes/emails/class-listing-claim-approve.php:52
+msgid ""
+"Hi, %user_name%! Your claim for \"%listing_title%\" has been approved, click "
+"on the following link to edit it: %listing_url%"
+msgstr ""
+
+#: includes/configs/settings.php:54
 #: includes/emails/class-listing-claim-reject.php:51
 msgid "Claim Rejected"
+msgstr ""
+
+#: includes/configs/settings.php:55
+msgid ""
+"This email is sent to users when claim is rejected, the following tokens are "
+"available: %user_name%, %listing_title%."
+msgstr ""
+
+#: includes/configs/settings.php:57
+#: includes/emails/class-listing-claim-reject.php:52
+msgid ""
+"Hi, %user_name%! Unfortunately, your claim for \"%listing_title%\" has been "
+"rejected."
 msgstr ""
 
 #: includes/controllers/class-listing-claim.php:61
@@ -67,90 +99,22 @@ msgstr ""
 msgid "Claim Submitted"
 msgstr ""
 
-#: includes/configs/settings.php:17
-msgid "Claiming"
+#: includes/controllers/class-listing-claim.php:132
+msgid "You've already submitted a claim."
 msgstr ""
 
-#: includes/configs/post-types.php:21 includes/configs/post-types.php:27
-msgid "Claims"
-msgstr ""
-
-#: includes/configs/meta-boxes.php:15
-#: includes/models/class-listing-claim.php:53
-msgid "Details"
-msgstr ""
-
-#: includes/configs/post-types.php:24
-msgid "Edit Claim"
-msgstr ""
-
-#: templates/listing-claim/submit/listing-claim-complete-message.php:8
-msgid "Edit Listing"
-msgstr ""
-
-#: includes/configs/settings.php:55
-#: includes/emails/class-listing-claim-reject.php:52
+#: includes/emails/class-listing-claim-submit.php:52
 msgid ""
-"Hi, %user_name%! Unfortunately, your claim for listing \"%listing_title%\" "
-"has been rejected."
-msgstr ""
-
-#: includes/configs/settings.php:46
-#: includes/emails/class-listing-claim-approve.php:52
-msgid ""
-"Hi, %user_name%! Your claim for listing \"%listing_title%\" has been "
-"approved, click on the following link to edit it: %listing_url%"
-msgstr ""
-
-#. Author of the plugin
-msgid "HivePress"
-msgstr ""
-
-#. Name of the plugin
-msgid "HivePress Claim Listings"
-msgstr ""
-
-#. Author URI of the plugin
-msgid "https://hivepress.io/"
-msgstr ""
-
-#: includes/components/class-listing-claim.php:320
-#: includes/components/class-listing-claim.php:370
-msgid "Listing"
-msgstr ""
-
-#: includes/configs/settings.php:32
-msgid "Manually approve new claims"
-msgstr ""
-
-#: includes/configs/settings.php:31
-msgid "Moderation"
-msgstr ""
-
-#: includes/configs/post-types.php:25
-msgid "New Claim"
-msgstr ""
-
-#: includes/configs/post-types.php:29
-msgid "No Claims Found"
-msgstr ""
-
-#: includes/configs/post-types.php:30
-msgid "No Claims Found in Trash"
+"A new claim for \"%listing_title%\" %claim_url% has been submitted with the "
+"following details: %claim_details%"
 msgstr ""
 
 #: includes/forms/class-listing-claim-submit.php:101
-msgid ""
-"Please provide details that will help us verify that you're the owner of "
-"this listing."
+msgid "Please provide details that will help us verify that you're the owner."
 msgstr ""
 
-#: templates/listing-claim/submit/listing-claim-complete-message.php:11
-msgid "Return to My Account"
-msgstr ""
-
-#: includes/configs/post-types.php:28
-msgid "Search Claims"
+#: includes/forms/class-listing-claim-submit.php:102
+msgid "Your claim has been submitted."
 msgstr ""
 
 #: includes/forms/class-listing-claim-submit.php:117
@@ -160,45 +124,29 @@ msgstr ""
 #: templates/listing-claim/submit/listing-claim-complete-message.php:7
 #, php-format
 msgid ""
-"Thank you! Your claim for listing \"%s\" has been approved and you can start "
+"Thank you! Your claim for \"%s\" has been approved and you can start "
 "managing it."
 msgstr ""
 
 #: templates/listing-claim/submit/listing-claim-complete-message.php:10
 #, php-format
 msgid ""
-"Thank you! Your claim for listing \"%s\" has been submitted and will be "
-"reviewed as soon as possible."
+"Thank you! Your claim for \"%s\" has been submitted and will be reviewed as "
+"soon as possible."
 msgstr ""
 
-#: includes/configs/settings.php:44
-msgid ""
-"This email is sent to users when claim is approved, the following tokens are "
-"available: %user_name%, %listing_title%, %listing_url%."
+#. Name of the plugin
+msgid "HivePress Claim Listings"
 msgstr ""
 
-#: includes/configs/settings.php:53
-msgid ""
-"This email is sent to users when claim is rejected, the following tokens are "
-"available: %user_name%, %listing_title%."
+#. Description of the plugin
+msgid "Charge users for claiming listings."
 msgstr ""
 
-#: templates/listing/view/listing-verified-badge.php:7
-msgid "Verified"
+#. Author of the plugin
+msgid "HivePress"
 msgstr ""
 
-#: includes/configs/post-types.php:26
-msgid "View Claim"
-msgstr ""
-
-#: includes/configs/settings.php:22
-msgid "WooCommerce Product"
-msgstr ""
-
-#: includes/controllers/class-listing-claim.php:132
-msgid "You've already submitted a claim for this listing"
-msgstr ""
-
-#: includes/forms/class-listing-claim-submit.php:102
-msgid "Your claim has been submitted."
+#. Author URI of the plugin
+msgid "https://hivepress.io/"
 msgstr ""
