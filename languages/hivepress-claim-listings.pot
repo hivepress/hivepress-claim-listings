@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HivePress Claim Listings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-20 18:37+0000\n"
+"POT-Creation-Date: 2019-11-21 10:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -72,8 +72,8 @@ msgstr ""
 #: includes/configs/settings.php:46
 #: includes/emails/class-listing-claim-approve.php:52
 msgid ""
-"Hi, %user_name%! Your claim for \"%listing_title%\" has been approved, click "
-"on the following link to edit it: %listing_url%"
+"Hi, %user_name%! Your claim for listing \"%listing_title%\" has been "
+"approved, click on the following link to edit it: %listing_url%"
 msgstr ""
 
 #: includes/configs/settings.php:54
@@ -90,8 +90,32 @@ msgstr ""
 #: includes/configs/settings.php:57
 #: includes/emails/class-listing-claim-reject.php:52
 msgid ""
-"Hi, %user_name%! Unfortunately, your claim for \"%listing_title%\" has been "
-"rejected."
+"Hi, %user_name%! Unfortunately, your claim for listing \"%listing_title%\" "
+"has been rejected."
+msgstr ""
+
+#: includes/configs/strings.php:14
+msgid "Claim Listing"
+msgstr ""
+
+#: includes/configs/strings.php:15
+msgid ""
+"Please provide details that will help us verify that you're the owner of "
+"this listing."
+msgstr ""
+
+#: includes/configs/strings.php:16
+#, php-format
+msgid ""
+"Thank you! Your claim for listing \"%s\" has been submitted and will be "
+"reviewed as soon as possible."
+msgstr ""
+
+#: includes/configs/strings.php:17
+#, php-format
+msgid ""
+"Thank you! Your claim for listing \"%s\" has been approved and you can start "
+"managing it."
 msgstr ""
 
 #: includes/controllers/class-listing-claim.php:61
@@ -105,12 +129,8 @@ msgstr ""
 
 #: includes/emails/class-listing-claim-submit.php:52
 msgid ""
-"A new claim for \"%listing_title%\" %claim_url% has been submitted with the "
-"following details: %claim_details%"
-msgstr ""
-
-#: includes/forms/class-listing-claim-submit.php:101
-msgid "Please provide details that will help us verify that you're the owner."
+"A new claim for listing \"%listing_title%\" %claim_url% has been submitted "
+"with the following details: %claim_details%"
 msgstr ""
 
 #: includes/forms/class-listing-claim-submit.php:102
@@ -119,20 +139,6 @@ msgstr ""
 
 #: includes/forms/class-listing-claim-submit.php:117
 msgid "Submit Claim"
-msgstr ""
-
-#: templates/listing-claim/submit/listing-claim-complete-message.php:7
-#, php-format
-msgid ""
-"Thank you! Your claim for \"%s\" has been approved and you can start "
-"managing it."
-msgstr ""
-
-#: templates/listing-claim/submit/listing-claim-complete-message.php:10
-#, php-format
-msgid ""
-"Thank you! Your claim for \"%s\" has been submitted and will be reviewed as "
-"soon as possible."
 msgstr ""
 
 #. Name of the plugin

@@ -49,7 +49,7 @@ class Listing_Claim_Approve extends Email {
 		$args = hp\merge_arrays(
 			[
 				'subject' => esc_html__( 'Claim Approved', 'hivepress-claim-listings' ),
-				'body'    => hp\sanitize_html( __( 'Hi, %user_name%! Your claim for "%listing_title%" has been approved, click on the following link to edit it: %listing_url%', 'hivepress-claim-listings' ) ),
+				'body'    => hp\sanitize_html( __( 'Hi, %user_name%! Your claim for listing "%listing_title%" has been approved, click on the following link to edit it: %listing_url%', 'hivepress-claim-listings' ) ),
 			],
 			$args
 		);
