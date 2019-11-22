@@ -20,7 +20,7 @@ return [
 		'labels'       => [
 			'name'               => esc_html__( 'Claims', 'hivepress-claim-listings' ),
 			'singular_name'      => esc_html__( 'Claim', 'hivepress-claim-listings' ),
-			'add_new'            => esc_html_x( 'Add New', 'listing claim', 'hivepress-claim-listings' ),
+			'add_new'            => esc_html_x( 'Add New', 'claim', 'hivepress-claim-listings' ),
 			'add_new_item'       => esc_html__( 'Add Claim', 'hivepress-claim-listings' ),
 			'edit_item'          => esc_html__( 'Edit Claim', 'hivepress-claim-listings' ),
 			'new_item'           => esc_html__( 'Add Claim', 'hivepress-claim-listings' ),

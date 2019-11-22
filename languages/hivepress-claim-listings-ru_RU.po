@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HivePress Claim Listings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-21 18:57+0000\n"
-"PO-Revision-Date: 2019-11-22 22:16+0000\n"
+"POT-Creation-Date: 2019-11-22 22:36+0000\n"
+"PO-Revision-Date: 2019-11-22 22:37+0000\n"
 "Last-Translator: admin <admin@admin.com>\n"
 "Language-Team: Русский\n"
 "Language: ru_RU\n"
@@ -15,12 +15,12 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.3.1; wp-5.3"
 
-#: includes/components/class-listing-claim.php:275
+#: includes/components/class-listing-claim.php:276
 #, php-format
 msgid "Claim for %s"
 msgstr "Запросить доступ за %s"
 
-#: includes/components/class-listing-claim.php:393
+#: includes/components/class-listing-claim.php:394
 #: includes/configs/settings.php:43
 #: includes/emails/class-listing-claim-approve.php:51
 msgid "Claim Approved"
@@ -36,7 +36,7 @@ msgid "Claim"
 msgstr "Запрос"
 
 #: includes/configs/post-types.php:23
-msgctxt "listing claim"
+msgctxt "claim"
 msgid "Add New"
 msgstr "Добавить новый"
 
