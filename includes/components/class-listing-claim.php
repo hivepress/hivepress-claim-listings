@@ -62,13 +62,15 @@ final class Listing_Claim {
 	/**
 	 * Updates claim.
 	 *
-	 * @param int     $claim_id Claim ID.
-	 * @param WP_Post $claim Claim object.
+	 * @param int $claim_id Claim ID.
 	 */
-	public function update_claim( $claim_id, $claim ) {
+	public function update_claim( $claim_id ) {
 
 		// Remove action.
 		remove_action( 'hivepress/v1/models/listing_claim/create', [ $this, 'update_claim' ] );
+
+		// Get claim.
+		$claim = get_post( $claim_id );
 
 		// Set claim title.
 		$title = '#' . $claim_id;
