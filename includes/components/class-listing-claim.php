@@ -27,10 +27,10 @@ final class Listing_Claim {
 	public function __construct() {
 
 		// Update claim.
-		add_action( 'save_post_hp_listing_claim', [ $this, 'update_claim' ], 99, 2 );
+		add_action( 'hivepress/v1/models/listing_claim/create', [ $this, 'update_claim' ] );
 
 		// Update claim status.
-		add_action( 'transition_post_status', [ $this, 'update_claim_status' ], 10, 3 );
+		add_action( 'hivepress/v1/models/listing_claim/update_status', [ $this, 'update_claim_status' ], 10, 3 );
 
 		if ( class_exists( 'WooCommerce' ) ) {
 
@@ -68,7 +68,7 @@ final class Listing_Claim {
 	public function update_claim( $claim_id, $claim ) {
 
 		// Remove action.
-		remove_action( 'save_post_hp_listing_claim', [ $this, 'update_claim' ], 99 );
+		remove_action( 'hivepress/v1/models/listing_claim/create', [ $this, 'update_claim' ] );
 
 		// Set claim title.
 		$title = '#' . $claim_id;
@@ -86,92 +86,93 @@ final class Listing_Claim {
 	/**
 	 * Updates claim status.
 	 *
-	 * @param string  $new_status New status.
-	 * @param string  $old_status Old status.
-	 * @param WP_Post $claim Claim object.
+	 * @param int    $claim_id Claim ID.
+	 * @param string $new_status New status.
+	 * @param string $old_status Old status.
 	 */
-	public function update_claim_status( $new_status, $old_status, $claim ) {
-		if ( 'hp_listing_claim' === $claim->post_type && $new_status !== $old_status ) {
+	public function update_claim_status( $claim_id, $new_status, $old_status ) {
 
-			// Get listing ID.
-			$listing_id = $this->get_listing_id( $claim->ID );
+		// Get claim.
+		$claim = get_post( $claim_id );
 
-			if ( 0 !== $listing_id ) {
-				if ( 'pending' === $new_status ) {
+		// Get listing ID.
+		$listing_id = $this->get_listing_id( $claim->ID );
 
-					// Send email.
-					( new Emails\Listing_Claim_Submit(
-						[
-							'recipient' => get_option( 'admin_email' ),
-							'tokens'    => [
-								'listing_title' => get_the_title( $listing_id ),
-								'claim_details' => $claim->post_content,
-								'claim_url'     => admin_url(
-									'post.php?' . http_build_query(
-										[
-											'action' => 'edit',
-											'post'   => $claim->ID,
-										]
-									)
-								),
-							],
-						]
-					) )->send();
-				} elseif ( in_array( $new_status, [ 'publish', 'trash' ], true ) ) {
+		if ( 0 !== $listing_id ) {
+			if ( 'pending' === $new_status ) {
 
-					// Get user.
-					$user = get_userdata( $claim->post_author );
+				// Send email.
+				( new Emails\Listing_Claim_Submit(
+					[
+						'recipient' => get_option( 'admin_email' ),
+						'tokens'    => [
+							'listing_title' => get_the_title( $listing_id ),
+							'claim_details' => $claim->post_content,
+							'claim_url'     => admin_url(
+								'post.php?' . http_build_query(
+									[
+										'action' => 'edit',
+										'post'   => $claim->ID,
+									]
+								)
+							),
+						],
+					]
+				) )->send();
+			} elseif ( in_array( $new_status, [ 'publish', 'trash' ], true ) ) {
 
-					if ( false !== $user ) {
-						if ( 'publish' === $new_status ) {
+				// Get user.
+				$user = get_userdata( $claim->post_author );
 
-							// Approve claim.
-							update_post_meta( $listing_id, 'hp_verified', '1' );
-							update_post_meta( $claim->ID, 'hp_user', get_post_field( 'post_author', $listing_id ) );
+				if ( false !== $user ) {
+					if ( 'publish' === $new_status ) {
 
+						// Approve claim.
+						update_post_meta( $listing_id, 'hp_verified', '1' );
+						update_post_meta( $claim->ID, 'hp_user', get_post_field( 'post_author', $listing_id ) );
+
+						wp_update_post(
+							[
+								'ID'          => $listing_id,
+								'post_author' => $user->ID,
+							]
+						);
+
+						// Send email.
+						( new Emails\Listing_Claim_Approve(
+							[
+								'recipient' => $user->user_email,
+								'tokens'    => [
+									'user_name'     => $user->display_name,
+									'listing_title' => get_the_title( $listing_id ),
+									'listing_url'   => Controllers\Listing::get_url( 'edit_listing', [ 'listing_id' => $listing_id ] ),
+								],
+							]
+						) )->send();
+					} else {
+
+						// Reject claim.
+						delete_post_meta( $listing_id, 'hp_verified' );
+
+						if ( absint( get_post_field( 'post_author', $listing_id ) ) === $user->ID ) {
 							wp_update_post(
 								[
 									'ID'          => $listing_id,
-									'post_author' => $user->ID,
+									'post_author' => absint( get_post_meta( $claim->ID, 'hp_user', true ) ),
 								]
 							);
-
-							// Send email.
-							( new Emails\Listing_Claim_Approve(
-								[
-									'recipient' => $user->user_email,
-									'tokens'    => [
-										'user_name'     => $user->display_name,
-										'listing_title' => get_the_title( $listing_id ),
-										'listing_url'   => Controllers\Listing::get_url( 'edit_listing', [ 'listing_id' => $listing_id ] ),
-									],
-								]
-							) )->send();
-						} else {
-
-							// Reject claim.
-							delete_post_meta( $listing_id, 'hp_verified' );
-
-							if ( absint( get_post_field( 'post_author', $listing_id ) ) === $user->ID ) {
-								wp_update_post(
-									[
-										'ID'          => $listing_id,
-										'post_author' => absint( get_post_meta( $claim->ID, 'hp_user', true ) ),
-									]
-								);
-							}
-
-							// Send email.
-							( new Emails\Listing_Claim_Reject(
-								[
-									'recipient' => $user->user_email,
-									'tokens'    => [
-										'user_name'     => $user->display_name,
-										'listing_title' => get_the_title( $listing_id ),
-									],
-								]
-							) )->send();
 						}
+
+						// Send email.
+						( new Emails\Listing_Claim_Reject(
+							[
+								'recipient' => $user->user_email,
+								'tokens'    => [
+									'user_name'     => $user->display_name,
+									'listing_title' => get_the_title( $listing_id ),
+								],
+							]
+						) )->send();
 					}
 				}
 			}
