@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: HivePress Claim Listings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-21 18:57+0000\n"
-"PO-Revision-Date: 2019-11-22 12:31+0000\n"
+"PO-Revision-Date: 2019-11-22 22:16+0000\n"
 "Last-Translator: admin <admin@admin.com>\n"
 "Language-Team: Русский\n"
 "Language: ru_RU\n"
@@ -69,6 +69,8 @@ msgid ""
 "This email is sent to users when claim is approved, the following tokens are "
 "available: %user_name%, %listing_title%, %listing_url%."
 msgstr ""
+"Это письмо отправляется пользователям при одобрении запроса, следующие "
+"токены доступны: %user_name%, %listing_title%, %listing_url%."
 
 #: includes/configs/settings.php:46
 #: includes/emails/class-listing-claim-approve.php:52
@@ -77,7 +79,7 @@ msgid ""
 "approved, click on the following link to edit it: %listing_url%"
 msgstr ""
 "Привет, %user_name%! Ваш запрос на доступ к объявлению \"%listing_title%\" "
-"был одобрен, кликните todo."
+"был одобрен, кликните на эту ссылку чтобы редактировать его: %listing_url%"
 
 #: includes/configs/settings.php:54
 #: includes/emails/class-listing-claim-reject.php:51
@@ -89,6 +91,8 @@ msgid ""
 "This email is sent to users when claim is rejected, the following tokens are "
 "available: %user_name%, %listing_title%."
 msgstr ""
+"Это письмо отправляется пользователям при отклонении запроса, следующие "
+"токены доступны: %user_name%, %listing_title%."
 
 #: includes/configs/settings.php:57
 #: includes/emails/class-listing-claim-reject.php:52
@@ -108,7 +112,7 @@ msgid ""
 "Please provide details that will help us verify that you're the owner of "
 "this listing."
 msgstr ""
-"Пожалуйста, предоставьте детали которые помогут нам проверить что вы "
+"Пожалуйста, предоставьте детали которые помогут нам проверить, что вы "
 "являетесь владельцем этого объявления."
 
 #: includes/configs/strings.php:16
@@ -156,7 +160,7 @@ msgstr "Отправить запрос"
 
 #. Name of the plugin
 msgid "HivePress Claim Listings"
-msgstr "HivePress Запросы на доступ к объявлениям"
+msgstr "HivePress Запросы доступа к объявлениям"
 
 #. Description of the plugin
 msgid "Charge users for claiming listings."
