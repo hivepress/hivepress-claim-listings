@@ -23,13 +23,6 @@ defined( 'ABSPATH' ) || exit;
 class Listing_Claim extends Controller {
 
 	/**
-	 * Controller name.
-	 *
-	 * @var string
-	 */
-	protected static $name;
-
-	/**
 	 * Controller routes.
 	 *
 	 * @var array
@@ -237,7 +230,7 @@ class Listing_Claim extends Controller {
 				'template' => 'listing_claim_submit_complete_page',
 
 				'context'  => [
-					'listing' => Models\Listing::get( get_query_var( 'hp_listing_id' ) ),
+					'listing' => Models\Listing::get_by_id( get_query_var( 'hp_listing_id' ) ),
 				],
 			]
 		) )->render();

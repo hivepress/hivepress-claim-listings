@@ -20,13 +20,6 @@ defined( 'ABSPATH' ) || exit;
 class Listing_Claim_Submit extends Model_Form {
 
 	/**
-	 * Form name.
-	 *
-	 * @var string
-	 */
-	protected static $name;
-
-	/**
 	 * Form description.
 	 *
 	 * @var string

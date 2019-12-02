@@ -21,13 +21,6 @@ defined( 'ABSPATH' ) || exit;
 class Listing_Claim_Submit_Form extends Form {
 
 	/**
-	 * Block type.
-	 *
-	 * @var string
-	 */
-	protected static $type;
-
-	/**
 	 * Class constructor.
 	 *
 	 * @param array $args Block arguments.

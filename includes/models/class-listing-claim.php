@@ -20,13 +20,6 @@ defined( 'ABSPATH' ) || exit;
 class Listing_Claim extends Post {
 
 	/**
-	 * Model name.
-	 *
-	 * @var string
-	 */
-	protected static $name;
-
-	/**
 	 * Model fields.
 	 *
 	 * @var array
