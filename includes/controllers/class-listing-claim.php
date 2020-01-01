@@ -23,29 +23,22 @@ defined( 'ABSPATH' ) || exit;
 class Listing_Claim extends Controller {
 
 	/**
-	 * Controller routes.
-	 *
-	 * @var array
-	 */
-	protected static $routes = [];
-
-	/**
-	 * Class initializer.
+	 * Class constructor.
 	 *
 	 * @param array $args Controller arguments.
 	 */
-	public static function init( $args = [] ) {
+	public function __construct( $args = [] ) {
 		$args = hp\merge_arrays(
 			[
 				'routes' => [
 					[
-						'path'      => '/listing-claims',
-						'rest'      => true,
+						'path'   => '/listing-claims',
+						'rest'   => true,
 
-						'endpoints' => [
+						'routes' => [
 							[
-								'methods' => 'POST',
-								'action'  => 'submit_claim',
+								'method' => 'POST',
+								'action' => [ $this, 'submit_claim' ],
 							],
 						],
 					],
@@ -53,15 +46,15 @@ class Listing_Claim extends Controller {
 					'submit_complete' => [
 						'title'    => esc_html__( 'Claim Submitted', 'hivepress-claim-listings' ),
 						'path'     => '/claim-listing/(?P<listing_id>\d+)/complete',
-						'redirect' => 'redirect_listing_claim_submit_complete_page',
-						'action'   => 'render_listing_claim_submit_complete_page',
+						'redirect' => [ $this, 'redirect_listing_claim_submit_complete_page' ],
+						'action'   => [ $this, 'render_listing_claim_submit_complete_page' ],
 					],
 				],
 			],
 			$args
 		);
 
-		parent::init( $args );
+		parent::__construct( $args );
 	}
 
 	/**

@@ -40,9 +40,9 @@ class Listing_Claim_Submit_Complete_Page extends Listing_Submit_Page {
 					'page_content' => [
 						'blocks' => [
 							'listing_claim_complete_message' => [
-								'type'     => 'element',
-								'filepath' => 'listing-claim/submit/listing-claim-complete-message',
-								'order'    => 10,
+								'type'   => 'part',
+								'path'   => 'listing-claim/submit/listing-claim-complete-message',
+								'_order' => 10,
 							],
 						],
 					],

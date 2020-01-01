@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HivePress Claim Listings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-22 22:36+0000\n"
-"PO-Revision-Date: 2019-11-22 22:37+0000\n"
+"POT-Creation-Date: 2019-11-25 16:28+0000\n"
+"PO-Revision-Date: 2019-11-25 16:29+0000\n"
 "Last-Translator: admin <admin@admin.com>\n"
 "Language-Team: Русский\n"
 "Language: ru_RU\n"
@@ -15,12 +15,12 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.3.1; wp-5.3"
 
-#: includes/components/class-listing-claim.php:276
+#: includes/components/class-listing-claim.php:278
 #, php-format
 msgid "Claim for %s"
 msgstr "Запросить доступ за %s"
 
-#: includes/components/class-listing-claim.php:394
+#: includes/components/class-listing-claim.php:396
 #: includes/configs/settings.php:43
 #: includes/emails/class-listing-claim-approve.php:51
 msgid "Claim Approved"
@@ -65,12 +65,8 @@ msgid "Manually approve new claims"
 msgstr "Вручную одобрять новые запросы"
 
 #: includes/configs/settings.php:44
-msgid ""
-"This email is sent to users when claim is approved, the following tokens are "
-"available: %user_name%, %listing_title%, %listing_url%."
-msgstr ""
-"Это письмо отправляется пользователям при одобрении запроса, следующие "
-"токены доступны: %user_name%, %listing_title%, %listing_url%."
+msgid "This email is sent to users when claim is approved."
+msgstr "Это письмо отправляется пользователям при одобрении запроса."
 
 #: includes/configs/settings.php:46
 #: includes/emails/class-listing-claim-approve.php:52
@@ -87,12 +83,8 @@ msgid "Claim Rejected"
 msgstr "Запрос отклонен"
 
 #: includes/configs/settings.php:55
-msgid ""
-"This email is sent to users when claim is rejected, the following tokens are "
-"available: %user_name%, %listing_title%."
-msgstr ""
-"Это письмо отправляется пользователям при отклонении запроса, следующие "
-"токены доступны: %user_name%, %listing_title%."
+msgid "This email is sent to users when claim is rejected."
+msgstr "Это письмо отправляется пользователям при отклонении запроса."
 
 #: includes/configs/settings.php:57
 #: includes/emails/class-listing-claim-reject.php:52

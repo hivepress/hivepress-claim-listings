@@ -345,13 +345,13 @@ final class Listing_Claim {
 					'listing_actions_primary' => [
 						'blocks' => [
 							'listing_claim_submit_modal' => [
-								'type'    => 'modal',
-								'caption' => hivepress()->translator->get_string( 'claim_listing' ),
+								'type'   => 'modal',
+								'title'  => hivepress()->translator->get_string( 'claim_listing' ),
 
-								'blocks'  => [
+								'blocks' => [
 									'listing_claim_submit_form' => [
 										'type'       => 'listing_claim_submit_form',
-										'order'      => 10,
+										'_order'     => 10,
 
 										'attributes' => [
 											'class' => [ 'hp-form--narrow' ],
@@ -361,9 +361,9 @@ final class Listing_Claim {
 							],
 
 							'listing_claim_submit_link'  => [
-								'type'     => 'element',
-								'filepath' => 'listing/view/page/listing-claim-submit-link',
-								'order'    => 30,
+								'type'   => 'part',
+								'path'   => 'listing/view/page/listing-claim-submit-link',
+								'_order' => 30,
 							],
 						],
 					],

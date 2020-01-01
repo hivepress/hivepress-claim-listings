@@ -98,7 +98,7 @@ class Listing_Claim_Submit extends Model_Form {
 
 				'fields'      => [
 					'details'    => [
-						'order' => 10,
+						'_order' => 10,
 					],
 
 					'listing_id' => [
