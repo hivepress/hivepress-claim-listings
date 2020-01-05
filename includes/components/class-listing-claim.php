@@ -368,8 +368,7 @@ final class Listing_Claim {
 						],
 					],
 				],
-			],
-			'blocks'
+			]
 		);
 	}
 

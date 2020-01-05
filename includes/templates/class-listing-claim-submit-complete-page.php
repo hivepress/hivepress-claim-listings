@@ -48,8 +48,7 @@ class Listing_Claim_Submit_Complete_Page extends Listing_Submit_Page {
 					],
 				],
 			],
-			$args,
-			'blocks'
+			$args
 		);
 
 		parent::init( $args );
