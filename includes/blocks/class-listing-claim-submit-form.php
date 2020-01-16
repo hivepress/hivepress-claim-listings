@@ -39,7 +39,7 @@ class Listing_Claim_Submit_Form extends Form {
 	/**
 	 * Bootstraps block properties.
 	 */
-	protected function bootstrap() {
+	protected function boot() {
 		if ( is_singular( 'hp_listing' ) ) {
 
 			// Set listing ID.
@@ -51,6 +51,6 @@ class Listing_Claim_Submit_Form extends Form {
 			}
 		}
 
-		parent::bootstrap();
+		parent::boot();
 	}
 }
