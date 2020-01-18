@@ -146,7 +146,7 @@ class Listing_Claim extends Controller {
 		);
 
 		if ( ! $claim->save() ) {
-			return hp\rest_error( 400 );
+			return hp\rest_error( 400, $claim->_get_errors() );
 		}
 
 		return new \WP_Rest_Response(
