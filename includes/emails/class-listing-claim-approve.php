@@ -20,33 +20,18 @@ defined( 'ABSPATH' ) || exit;
 class Listing_Claim_Approve extends Email {
 
 	/**
-	 * Email subject.
-	 *
-	 * @var string
-	 */
-	protected static $subject;
-
-	/**
-	 * Email body.
-	 *
-	 * @var string
-	 */
-	protected static $body;
-
-	/**
-	 * Class initializer.
+	 * Class constructor.
 	 *
 	 * @param array $args Email arguments.
 	 */
-	public static function init( $args = [] ) {
+	public function __construct( $args = [] ) {
 		$args = hp\merge_arrays(
 			[
 				'subject' => esc_html__( 'Claim Approved', 'hivepress-claim-listings' ),
-				'body'    => hp\sanitize_html( __( 'Hi, %user_name%! Your claim for listing "%listing_title%" has been approved, click on the following link to edit it: %listing_url%', 'hivepress-claim-listings' ) ),
 			],
 			$args
 		);
 
-		parent::init( $args );
+		parent::__construct( $args );
 	}
 }

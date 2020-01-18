@@ -20,89 +20,42 @@ defined( 'ABSPATH' ) || exit;
 class Listing_Claim_Submit extends Model_Form {
 
 	/**
-	 * Form description.
-	 *
-	 * @var string
-	 */
-	protected static $description;
-
-	/**
-	 * Form title.
-	 *
-	 * @var string
-	 */
-	protected static $title;
-
-	/**
-	 * Form message.
-	 *
-	 * @var string
-	 */
-	protected static $message;
-
-	/**
-	 * Model name.
-	 *
-	 * @var string
-	 */
-	protected static $model;
-
-	/**
-	 * Form action.
-	 *
-	 * @var string
-	 */
-	protected static $action;
-
-	/**
-	 * Form method.
-	 *
-	 * @var string
-	 */
-	protected static $method = 'POST';
-
-	/**
-	 * Form captcha.
-	 *
-	 * @var bool
-	 */
-	protected static $captcha = false;
-
-	/**
-	 * Form fields.
-	 *
-	 * @var array
-	 */
-	protected static $fields = [];
-
-	/**
-	 * Form button.
-	 *
-	 * @var object
-	 */
-	protected static $button;
-
-	/**
 	 * Class initializer.
+	 *
+	 * @param array $meta Form meta.
+	 */
+	public static function init( $meta = [] ) {
+		$meta = hp\merge_arrays(
+			[
+				'label'   => hivepress()->translator->get_string( 'claim_listing' ),
+				'captcha' => false,
+				'model'   => 'listing_claim',
+			],
+			$meta
+		);
+
+		parent::init( $meta );
+	}
+
+	/**
+	 * Class constructor.
 	 *
 	 * @param array $args Form arguments.
 	 */
-	public static function init( $args = [] ) {
+	public function __construct( $args = [] ) {
 		$args = hp\merge_arrays(
 			[
-				'title'       => hivepress()->translator->get_string( 'claim_listing' ),
 				'description' => hivepress()->translator->get_string( 'provide_details_to_verify_listing_ownership' ),
 				'message'     => esc_html__( 'Your claim has been submitted.', 'hivepress-claim-listings' ),
-				'model'       => 'listing_claim',
-				'action'      => hp\get_rest_url( '/listing-claims' ),
+				'action'      => hivepress()->router->get_url( 'listing_claim_submit_action' ),
 
 				'fields'      => [
-					'details'    => [
+					'details' => [
 						'_order' => 10,
 					],
 
-					'listing_id' => [
-						'type' => 'hidden',
+					'listing' => [
+						'display_type' => 'hidden',
 					],
 				],
 
@@ -113,6 +66,6 @@ class Listing_Claim_Submit extends Model_Form {
 			$args
 		);
 
-		parent::init( $args );
+		parent::__construct( $args );
 	}
 }

@@ -20,25 +20,11 @@ defined( 'ABSPATH' ) || exit;
 class Listing_Claim_Submit extends Email {
 
 	/**
-	 * Email subject.
-	 *
-	 * @var string
-	 */
-	protected static $subject;
-
-	/**
-	 * Email body.
-	 *
-	 * @var string
-	 */
-	protected static $body;
-
-	/**
-	 * Class initializer.
+	 * Class constructor.
 	 *
 	 * @param array $args Email arguments.
 	 */
-	public static function init( $args = [] ) {
+	public function __construct( $args = [] ) {
 		$args = hp\merge_arrays(
 			[
 				'subject' => esc_html__( 'Claim Submitted', 'hivepress-claim-listings' ),
@@ -47,6 +33,6 @@ class Listing_Claim_Submit extends Email {
 			$args
 		);
 
-		parent::init( $args );
+		parent::__construct( $args );
 	}
 }

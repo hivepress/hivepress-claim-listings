@@ -20,63 +20,48 @@ defined( 'ABSPATH' ) || exit;
 class Listing_Claim extends Post {
 
 	/**
-	 * Model fields.
-	 *
-	 * @var array
-	 */
-	protected static $fields = [];
-
-	/**
-	 * Model aliases.
-	 *
-	 * @var array
-	 */
-	protected static $aliases = [];
-
-	/**
-	 * Class initializer.
+	 * Class constructor.
 	 *
 	 * @param array $args Model arguments.
 	 */
-	public static function init( $args = [] ) {
+	public function __construct( $args = [] ) {
 		$args = hp\merge_arrays(
 			[
-				'fields'  => [
-					'details'    => [
+				'fields' => [
+					'details' => [
 						'label'      => hivepress()->translator->get_string( 'details' ),
 						'type'       => 'textarea',
 						'max_length' => 10240,
 						'required'   => true,
+						'_alias'     => 'post_content',
 					],
 
-					'status'     => [
+					'status'  => [
 						'type'       => 'text',
 						'max_length' => 128,
+						'_alias'     => 'post_status',
 					],
 
-					'user_id'    => [
+					'user'    => [
 						'type'      => 'number',
 						'min_value' => 1,
 						'required'  => true,
+						'_alias'    => 'post_author',
+						'_model'    => 'user',
 					],
 
-					'listing_id' => [
+					'listing' => [
 						'type'      => 'number',
 						'min_value' => 1,
 						'required'  => true,
+						'_alias'    => 'post_parent',
+						'_model'    => 'listing',
 					],
-				],
-
-				'aliases' => [
-					'post_content' => 'details',
-					'post_status'  => 'status',
-					'post_author'  => 'user_id',
-					'post_parent'  => 'listing_id',
 				],
 			],
 			$args
 		);
 
-		parent::init( $args );
+		parent::__construct( $args );
 	}
 }
