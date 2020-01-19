@@ -282,16 +282,16 @@ final class Listing_Claim extends Component {
 			return;
 		}
 
-		// Get claim.
-		$claim = Models\Listing_Claim::query()->filter(
+		// Get claim ID.
+		$claim_id = Models\Listing_Claim::query()->filter(
 			[
 				'user'       => get_current_user_id(),
 				'status__in' => [ 'pending', 'publish' ],
 			]
 		)->order( [ 'created_date' => 'desc' ] )
-		->get_first();
+		->get_first_id();
 
-		if ( empty( $claim ) ) {
+		if ( empty( $claim_id ) ) {
 			return;
 		}
 
