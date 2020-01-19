@@ -11,11 +11,14 @@ use HivePress\Helpers as hp;
 defined( 'ABSPATH' ) || exit;
 
 return [
-	'listings' => [
+	'listing_claims' => [
+		'title'    => esc_html__( 'Claims', 'hivepress-claim-listings' ),
+		'_order'   => 30,
+
 		'sections' => [
-			'claims' => [
-				'title'  => esc_html__( 'Claims', 'hivepress-claim-listings' ),
-				'_order' => 40,
+			'submission' => [
+				'title'  => hivepress()->translator->get_string( 'submission' ),
+				'_order' => 10,
 
 				'fields' => [
 					'product_listing_claim'           => [
@@ -23,7 +26,7 @@ return [
 						'description' => esc_html__( 'Choose a product that must be purchased in order to submit a claim.', 'hivepress-claim-listings' ),
 						'type'        => 'select',
 						'options'     => 'posts',
-						'post_type'   => 'product',
+						'option_args' => [ 'post_type' => 'product' ],
 						'_order'      => 10,
 					],
 
@@ -37,17 +40,20 @@ return [
 				],
 			],
 
-			'emails' => [
+			'emails'     => [
+				'title'  => hivepress()->translator->get_string( 'emails' ),
+				'_order' => 1000,
+
 				'fields' => [
 					'email_listing_claim_approve' => [
 						'label'       => esc_html__( 'Claim Approved', 'hivepress-claim-listings' ),
 						'description' => esc_html__( 'This email is sent to users when claim is approved.', 'hivepress-claim-listings' ) . ' ' . sprintf( hivepress()->translator->get_string( 'these_tokens_are_available' ), '%user_name%, %listing_title%, %listing_url%' ),
 						'type'        => 'textarea',
 						'default'     => hp\sanitize_html( __( 'Hi, %user_name%! Your claim for listing "%listing_title%" has been approved, click on the following link to edit it: %listing_url%', 'hivepress-claim-listings' ) ),
-						'html'        => 'post',
-						'required'    => true,
-						'autoload'    => false,
-						'_order'      => 40,
+						'max_length'  => 2048,
+						'html'        => true,
+						'_autoload'   => false,
+						'_order'      => 10,
 					],
 
 					'email_listing_claim_reject'  => [
@@ -55,10 +61,10 @@ return [
 						'description' => esc_html__( 'This email is sent to users when claim is rejected.', 'hivepress-claim-listings' ) . ' ' . sprintf( hivepress()->translator->get_string( 'these_tokens_are_available' ), '%user_name%, %listing_title%' ),
 						'type'        => 'textarea',
 						'default'     => hp\sanitize_html( __( 'Hi, %user_name%! Unfortunately, your claim for listing "%listing_title%" has been rejected.', 'hivepress-claim-listings' ) ),
-						'html'        => 'post',
-						'required'    => true,
-						'autoload'    => false,
-						'_order'      => 50,
+						'max_length'  => 2048,
+						'html'        => true,
+						'_autoload'   => false,
+						'_order'      => 20,
 					],
 				],
 			],

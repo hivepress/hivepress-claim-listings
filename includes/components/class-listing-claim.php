@@ -8,8 +8,8 @@
 namespace HivePress\Components;
 
 use HivePress\Helpers as hp;
+use HivePress\Models;
 use HivePress\Emails;
-use HivePress\Controllers;
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
@@ -19,20 +19,25 @@ defined( 'ABSPATH' ) || exit;
  *
  * @class Listing_Claim
  */
-final class Listing_Claim {
+final class Listing_Claim extends Component {
 
 	/**
 	 * Class constructor.
+	 *
+	 * @param array $args Component arguments.
 	 */
-	public function __construct() {
+	public function __construct( $args = [] ) {
 
-		// Update claim.
-		add_action( 'hivepress/v1/models/listing_claim/create', [ $this, 'update_claim' ] );
+		// Validate claim.
+		add_filter( 'hivepress/v1/models/listing_claim/errors', [ $this, 'validate_claim' ], 10, 2 );
+
+		// Create claim.
+		add_action( 'hivepress/v1/models/listing_claim/create', [ $this, 'create_claim' ] );
 
 		// Update claim status.
 		add_action( 'hivepress/v1/models/listing_claim/update_status', [ $this, 'update_claim_status' ], 10, 3 );
 
-		if ( class_exists( 'WooCommerce' ) ) {
+		if ( hivepress()->woocommerce->is_active() ) {
 
 			// Update order status.
 			add_action( 'woocommerce_order_status_changed', [ $this, 'update_order_status' ], 10, 4 );
@@ -41,9 +46,6 @@ final class Listing_Claim {
 			add_action( 'template_redirect', [ $this, 'redirect_order_page' ] );
 		}
 
-		// Filter form arguments.
-		add_filter( 'hivepress/v1/forms/listing_claim_submit', [ $this, 'filter_form_args' ] );
-
 		if ( is_admin() ) {
 
 			// Manage admin columns.
@@ -51,38 +53,55 @@ final class Listing_Claim {
 			add_action( 'manage_hp_listing_claim_posts_custom_column', [ $this, 'render_admin_columns' ], 10, 2 );
 		} else {
 
+			// Alter submission form.
+			add_filter( 'hivepress/v1/forms/listing_claim_submit', [ $this, 'alter_submission_form' ] );
+
 			// Alter templates.
 			add_filter( 'hivepress/v1/templates/listing_view_page', [ $this, 'alter_listing_view_page' ] );
-
-			// Set page title.
-			add_filter( 'hivepress/v1/controllers/listing_claim/routes/submit_complete', [ $this, 'set_page_title' ] );
 		}
+
+		parent::__construct( $args );
 	}
 
 	/**
-	 * Updates claim.
+	 * Validates claim.
+	 *
+	 * @param array  $errors Error messages.
+	 * @param object $claim Claim object.
+	 * @return array
+	 */
+	public function validate_claim( $errors, $claim ) {
+		if ( ! $claim->get_id() && empty( $errors ) ) {
+
+			// Get claim ID.
+			$claim_id = Models\Listing_Claim::query()->filter(
+				[
+					'user'    => $claim->get_user__id(),
+					'listing' => $claim->get_listing__id(),
+				]
+			)->get_first_id();
+
+			// Add error.
+			if ( $claim_id ) {
+				$errors[] = esc_html__( 'You\'ve already submitted a claim.', 'hivepress-claim-listings' );
+			}
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Creates claim.
 	 *
 	 * @param int $claim_id Claim ID.
 	 */
-	public function update_claim( $claim_id ) {
-
-		// Remove action.
-		remove_action( 'hivepress/v1/models/listing_claim/create', [ $this, 'update_claim' ] );
+	public function create_claim( $claim_id ) {
 
 		// Get claim.
-		$claim = get_post( $claim_id );
+		$claim = Models\Listing_Claim::query()->get_by_id( $claim_id );
 
-		// Set claim title.
-		$title = '#' . $claim_id;
-
-		if ( $claim->post_title !== $title ) {
-			wp_update_post(
-				[
-					'ID'         => $claim_id,
-					'post_title' => $title,
-				]
-			);
-		}
+		// Set title.
+		$claim->set_title( '#' . $claim->get_id() )->save();
 	}
 
 	/**
@@ -95,88 +114,99 @@ final class Listing_Claim {
 	public function update_claim_status( $claim_id, $new_status, $old_status ) {
 
 		// Get claim.
-		$claim = get_post( $claim_id );
+		$claim = Models\Listing_Claim::query()->get_by_id( $claim_id );
 
-		// Get listing ID.
-		$listing_id = $this->get_listing_id( $claim->ID );
+		// Get listing.
+		$listing = $claim->get_listing();
 
-		if ( 0 !== $listing_id ) {
-			if ( 'pending' === $new_status ) {
+		if ( empty( $listing ) ) {
+			return;
+		}
+
+		if ( 'pending' === $new_status ) {
+
+			// Send email.
+			( new Emails\Listing_Claim_Submit(
+				[
+					'recipient' => get_option( 'admin_email' ),
+
+					'tokens'    => [
+						'listing_title'         => $listing->get_title(),
+						'listing_claim_details' => $claim->get_details(),
+						'listing_claim_url'     => admin_url(
+							'post.php?' . http_build_query(
+								[
+									'action' => 'edit',
+									'post'   => $claim->get_id(),
+								]
+							)
+						),
+					],
+				]
+			) )->send();
+		} elseif ( in_array( $new_status, [ 'publish', 'trash' ], true ) ) {
+
+			// Get user.
+			$user = $claim->get_user();
+
+			if ( empty( $user ) ) {
+				return;
+			}
+
+			if ( 'publish' === $new_status ) {
+
+				// Update listing.
+				$listing->fill(
+					[
+						'verified' => true,
+						'user'     => $user->get_id(),
+					]
+				)->save();
 
 				// Send email.
-				( new Emails\Listing_Claim_Submit(
+				( new Emails\Listing_Claim_Approve(
 					[
-						'recipient' => get_option( 'admin_email' ),
+						'recipient' => $user->get_email(),
+
 						'tokens'    => [
-							'listing_title' => get_the_title( $listing_id ),
-							'claim_details' => $claim->post_content,
-							'claim_url'     => admin_url(
-								'post.php?' . http_build_query(
-									[
-										'action' => 'edit',
-										'post'   => $claim->ID,
-									]
-								)
-							),
+							'user_name'     => $user->get_display_name(),
+							'listing_title' => $listing->get_title(),
+							'listing_url'   => hivepress()->router->get_url( 'listing_edit_page', [ 'listing_id' => $listing->get_id() ] ),
 						],
 					]
 				) )->send();
-			} elseif ( in_array( $new_status, [ 'publish', 'trash' ], true ) ) {
+			} else {
 
-				// Get user.
-				$user = get_userdata( $claim->post_author );
+				// Remove verified status.
+				$listing->set_verified( null );
 
-				if ( false !== $user ) {
-					if ( 'publish' === $new_status ) {
+				if ( $listing->get_user__id() === $user->get_id() ) {
 
-						// Approve claim.
-						update_post_meta( $listing_id, 'hp_verified', '1' );
-						update_post_meta( $claim->ID, 'hp_user', get_post_field( 'post_author', $listing_id ) );
+					// Get user ID.
+					$user_id = Models\User::query()->filter(
+						[
+							'role' => 'administrator',
+						]
+					)->get_first_id();
 
-						wp_update_post(
-							[
-								'ID'          => $listing_id,
-								'post_author' => $user->ID,
-							]
-						);
-
-						// Send email.
-						( new Emails\Listing_Claim_Approve(
-							[
-								'recipient' => $user->user_email,
-								'tokens'    => [
-									'user_name'     => $user->display_name,
-									'listing_title' => get_the_title( $listing_id ),
-									'listing_url'   => Controllers\Listing::get_url( 'edit_listing', [ 'listing_id' => $listing_id ] ),
-								],
-							]
-						) )->send();
-					} else {
-
-						// Reject claim.
-						delete_post_meta( $listing_id, 'hp_verified' );
-
-						if ( absint( get_post_field( 'post_author', $listing_id ) ) === $user->ID ) {
-							wp_update_post(
-								[
-									'ID'          => $listing_id,
-									'post_author' => absint( get_post_meta( $claim->ID, 'hp_user', true ) ),
-								]
-							);
-						}
-
-						// Send email.
-						( new Emails\Listing_Claim_Reject(
-							[
-								'recipient' => $user->user_email,
-								'tokens'    => [
-									'user_name'     => $user->display_name,
-									'listing_title' => get_the_title( $listing_id ),
-								],
-							]
-						) )->send();
-					}
+					// Set user.
+					$listing->set_user( $user_id );
 				}
+
+				// Update listing.
+				$listing->save();
+
+				// Send email.
+				( new Emails\Listing_Claim_Reject(
+					[
+						'recipient' => $user->get_email(),
+
+						'tokens'    => [
+							'user_name'     => $user->get_display_name(),
+							'listing_title' => $listing->get_title(),
+						],
+					]
+				) )->send();
 			}
 		}
 	}
@@ -191,35 +221,40 @@ final class Listing_Claim {
 	 */
 	public function update_order_status( $order_id, $old_status, $new_status, $order ) {
 
-		// Get product ID.
+		// Check user.
+		if ( ! $order->get_user_id() ) {
+			return;
+		}
+
+		// Check product.
 		$product_id = absint( get_option( 'hp_product_listing_claim' ) );
 
-		if ( 0 !== $product_id && in_array( $product_id, $this->get_product_ids( $order ), true ) ) {
+		if ( empty( $product_id ) || ! in_array( $product_id, hivepress()->woocommerce->get_order_product_ids( $order ), true ) ) {
+			return;
+		}
 
-			// Get claim ID.
-			$claim_id = $this->get_claim_id( $order->get_user_id(), [ 'draft', 'publish' ] );
+		// Get claim.
+		$claim = Models\Listing_Claim::query()->filter(
+			[
+				'user'       => $order->get_user_id(),
+				'status__in' => [ 'draft', 'pending', 'publish' ],
+			]
+		)->order( [ 'created_date' => 'desc' ] )
+		->get_first();
 
-			if ( 0 !== $claim_id ) {
-				if ( in_array( $new_status, [ 'processing', 'completed' ], true ) ) {
+		if ( empty( $claim ) ) {
+			return;
+		}
 
-					// Submit claim.
-					wp_update_post(
-						[
-							'ID'          => $claim_id,
-							'post_status' => get_option( 'hp_listing_claim_enable_moderation' ) ? 'pending' : 'publish',
-						]
-					);
-				} elseif ( in_array( $new_status, [ 'failed', 'cancelled', 'refunded' ], true ) ) {
-
-					// Reject claim.
-					wp_update_post(
-						[
-							'ID'          => $claim_id,
-							'post_status' => 'trash',
-						]
-					);
-				}
-			}
+		// Update status.
+		if ( in_array( $new_status, [ 'processing', 'completed' ], true ) ) {
+			$claim->fill(
+				[
+					'status' => get_option( 'hp_listing_claim_enable_moderation' ) ? 'pending' : 'publish',
+				]
+			)->save();
+		} elseif ( in_array( $new_status, [ 'failed', 'cancelled', 'refunded' ], true ) ) {
+			$claim->set_status( 'trash' )->save();
 		}
 	}
 
@@ -227,60 +262,43 @@ final class Listing_Claim {
 	 * Redirects order page.
 	 */
 	public function redirect_order_page() {
-		if ( is_wc_endpoint_url( 'order-received' ) ) {
 
-			// Get product ID.
-			$product_id = absint( get_option( 'hp_product_listing_claim' ) );
-
-			if ( 0 !== $product_id ) {
-
-				// Get order.
-				$order = wc_get_order( get_query_var( 'order-received' ) );
-
-				if ( ! empty( $order ) && in_array( $product_id, $this->get_product_ids( $order ), true ) && in_array( $order->get_status(), [ 'processing', 'completed' ], true ) ) {
-
-					// Get claim ID.
-					$claim_id = $this->get_claim_id( $order->get_user_id(), [ 'pending', 'publish' ] );
-
-					// Redirect page.
-					if ( 0 !== $claim_id ) {
-						wp_safe_redirect( Controllers\Listing_Claim::get_url( 'submit_complete', [ 'listing_id' => wp_get_post_parent_id( $claim_id ) ] ) );
-
-						exit();
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Filters form arguments.
-	 *
-	 * @param array $form Form arguments.
-	 * @return array
-	 */
-	public function filter_form_args( $form ) {
-
-		// Get product.
-		$product = false;
-
-		if ( class_exists( 'WooCommerce' ) && get_option( 'hp_product_listing_claim' ) ) {
-			$product = wc_get_product( get_option( 'hp_product_listing_claim' ) );
+		// Check authentication.
+		if ( ! is_user_logged_in() || ! is_wc_endpoint_url( 'order-received' ) ) {
+			return;
 		}
 
-		// Unset message.
-		if ( ! get_option( 'hp_listing_claim_enable_moderation' ) || ! empty( $product ) ) {
-			$form['message'] = null;
+		// Get product ID.
+		$product_id = absint( get_option( 'hp_product_listing_claim' ) );
+
+		if ( empty( $product_id ) ) {
+			return;
 		}
 
-		// Set button caption.
-		if ( ! empty( $product ) ) {
-			$form['button']['label'] = sprintf( esc_html__( 'Claim for %s', 'hivepress-claim-listings' ), wp_strip_all_tags( wc_price( $product->get_price() ) ) );
-		} elseif ( ! get_option( 'hp_listing_claim_enable_moderation' ) ) {
-			$form['button']['label'] = hivepress()->translator->get_string( 'claim_listing' );
+		// Get order.
+		$order = wc_get_order( get_query_var( 'order-received' ) );
+
+		if ( empty( $order ) || ! in_array( $order->get_status(), [ 'processing', 'completed' ], true ) || ! in_array( $product_id, hivepress()->woocommerce->get_order_product_ids( $order ), true ) ) {
+			return;
 		}
 
-		return $form;
+		// Get claim.
+		$claim = Models\Listing_Claim::query()->filter(
+			[
+				'user'       => get_current_user_id(),
+				'status__in' => [ 'pending', 'publish' ],
+			]
+		)->order( [ 'created_date' => 'desc' ] )
+		->get_first();
+
+		if ( empty( $claim ) ) {
+			return;
+		}
+
+		// Redirect page.
+		wp_safe_redirect( hivepress()->router->get_url( 'listing_claim_submit_complete_page' ) );
+
+		exit;
 	}
 
 	/**
@@ -310,9 +328,9 @@ final class Listing_Claim {
 			$output = '&mdash;';
 
 			// Get listing ID.
-			$listing_id = $this->get_listing_id( $claim_id );
+			$listing_id = wp_get_post_parent_id( $claim_id );
 
-			if ( 0 !== $listing_id ) {
+			if ( $listing_id ) {
 
 				// Render column value.
 				$output = '<a href="' . esc_url(
@@ -332,6 +350,40 @@ final class Listing_Claim {
 	}
 
 	/**
+	 * Alters submission form.
+	 *
+	 * @param array $form Form arguments.
+	 * @return array
+	 */
+	public function alter_submission_form( $form ) {
+
+		// Get product.
+		$product = null;
+
+		if ( hivepress()->woocommerce->is_active() && get_option( 'hp_product_listing_claim' ) ) {
+			$product = wc_get_product( get_option( 'hp_product_listing_claim' ) );
+		}
+
+		if ( $product ) {
+
+			// Set form arguments.
+			$form = hp\merge_arrays(
+				$form,
+				[
+					'message'  => null,
+					'redirect' => hivepress()->router->get_url( 'listing_claim_submit_complete_page' ),
+
+					'button'   => [
+						'label' => sprintf( esc_html__( 'Claim for %s', 'hivepress-claim-listings' ), hivepress()->woocommerce->get_product_price_text( $product ) ),
+					],
+				]
+			);
+		}
+
+		return $form;
+	}
+
+	/**
 	 * Alters listing view page.
 	 *
 	 * @param array $template Template arguments.
@@ -346,6 +398,7 @@ final class Listing_Claim {
 						'blocks' => [
 							'listing_claim_submit_modal' => [
 								'type'   => 'modal',
+								'model'  => 'listing',
 								'title'  => hivepress()->translator->get_string( 'claim_listing' ),
 
 								'blocks' => [
@@ -363,86 +416,12 @@ final class Listing_Claim {
 							'listing_claim_submit_link'  => [
 								'type'   => 'part',
 								'path'   => 'listing/view/page/listing-claim-submit-link',
-								'_order' => 30,
+								'_order' => 40,
 							],
 						],
 					],
 				],
 			]
-		);
-	}
-
-	/**
-	 * Sets page title.
-	 *
-	 * @param array $route Route arguments.
-	 * @return array
-	 */
-	public function set_page_title( $route ) {
-
-		// Get listing ID.
-		$listing_id = hp\get_post_id(
-			[
-				'post_type'   => 'hp_listing',
-				'post_status' => 'publish',
-				'author'      => get_current_user_id(),
-				'post__in'    => [ absint( get_query_var( 'hp_listing_id' ) ) ],
-			]
-		);
-
-		// Set page title.
-		if ( 0 !== $listing_id ) {
-			$route['title'] = esc_html__( 'Claim Approved', 'hivepress-claim-listings' );
-		}
-
-		return $route;
-	}
-
-	/**
-	 * Gets claim ID.
-	 *
-	 * @param int   $user_id User ID.
-	 * @param mixed $status Claim status.
-	 * @return int
-	 */
-	protected function get_claim_id( $user_id, $status ) {
-		return hp\get_post_id(
-			[
-				'post_type'   => 'hp_listing_claim',
-				'post_status' => $status,
-				'author'      => $user_id,
-			]
-		);
-	}
-
-	/**
-	 * Gets listing ID.
-	 *
-	 * @param int $claim_id Claim ID.
-	 * @return int
-	 */
-	protected function get_listing_id( $claim_id ) {
-		return hp\get_post_id(
-			[
-				'post_type'   => 'hp_listing',
-				'post_status' => 'publish',
-				'post__in'    => [ absint( wp_get_post_parent_id( $claim_id ) ) ],
-			]
-		);
-	}
-
-	/**
-	 * Gets product IDs.
-	 *
-	 * @param WC_Order $order Order object.
-	 * @return array
-	 */
-	protected function get_product_ids( $order ) {
-		return array_map(
-			function( $item ) {
-				return $item->get_product_id();
-			},
-			$order->get_items()
 		);
 	}
 }

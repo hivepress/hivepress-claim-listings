@@ -2,8 +2,8 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-if ( ! get_post_meta( get_the_ID(), 'hp_verified', true ) && ( ! is_user_logged_in() || get_current_user_id() !== get_the_author_meta( 'ID' ) ) ) :
+if ( ! $listing->is_verified() ) :
 	?>
-	<a href="#<?php if ( is_user_logged_in() ) : ?>listing_claim_submit<?php else : ?>user_login<?php endif; ?>_modal" class="hp-listing__action hp-link"><i class="hp-icon fas fa-check-circle"></i><span><?php echo esc_html( hivepress()->translator->get_string( 'claim_listing' ) ); ?></span></a>
+	<a href="#<?php if ( is_user_logged_in() ) : ?>listing_claim_submit_modal_<?php echo esc_attr( $listing->get_id() ); else :	?>user_login_modal<?php endif; ?>" class="hp-listing__action hp-listing__action--claim hp-link"><i class="hp-icon fas fa-check-circle"></i><span><?php echo esc_html( hivepress()->translator->get_string( 'claim_listing' ) ); ?></span></a>
 	<?php
 endif;

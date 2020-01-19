@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @class Listing_Claim
  */
-class Listing_Claim extends Controller {
+final class Listing_Claim extends Controller {
 
 	/**
 	 * Class constructor.
@@ -48,9 +48,9 @@ class Listing_Claim extends Controller {
 					],
 
 					'listing_claim_submit_complete_page' => [
-						'title'    => esc_html__( 'Claim Submitted', 'hivepress-claim-listings' ),
 						'base'     => 'listing_claim_submit_page',
 						'path'     => '/complete',
+						'title'    => [ $this, 'get_listing_claim_submit_complete_title' ],
 						'redirect' => [ $this, 'redirect_listing_claim_submit_complete_page' ],
 						'action'   => [ $this, 'render_listing_claim_submit_complete_page' ],
 					],
@@ -103,7 +103,10 @@ class Listing_Claim extends Controller {
 			return hp\rest_error( 400 );
 		}
 
-		// todo check if already submitted.
+		if ( $listing->get_user__id() === $user->get_id() ) {
+			return hp\rest_error( 403, hivepress()->translator->get_string( 'you_cant_claim_your_own_listings' ) );
+		}
+
 		// Get claim status.
 		$status = 'publish';
 
@@ -139,5 +142,93 @@ class Listing_Claim extends Controller {
 				'id' => $claim->get_id(),
 			]
 		);
+	}
+
+	/**
+	 * Gets listing claim submit complete title.
+	 *
+	 * @return string
+	 */
+	public function get_listing_claim_submit_complete_title() {
+		$title = esc_html__( 'Claim Submitted', 'hivepress-claim-listings' );
+
+		if ( is_user_logged_in() ) {
+
+			// Get claim.
+			$claim = Models\Listing_Claim::query()->filter(
+				[
+					'user'       => get_current_user_id(),
+					'status__in' => [ 'draft', 'pending', 'publish' ],
+				]
+			)->order( [ 'created_date' => 'desc' ] )
+			->get_first();
+
+			// Set title.
+			if ( $claim && $claim->get_listing__status() === 'publish' ) {
+				$title = esc_html__( 'Claim Approved', 'hivepress-claim-listings' );
+			}
+
+			// Set request context.
+			hivepress()->request->set_context( 'listing_claim', $claim );
+		}
+
+		return $title;
+	}
+
+	/**
+	 * Redirects listing claim submit complete page.
+	 *
+	 * @return mixed
+	 */
+	public function redirect_listing_claim_submit_complete_page() {
+
+		// Check authentication.
+		if ( ! is_user_logged_in() ) {
+			return hivepress()->router->get_url(
+				'user_login_page',
+				[
+					'redirect' => hivepress()->router->get_current_url(),
+				]
+			);
+		}
+
+		// Get claim.
+		$claim = hivepress()->request->get_context( 'listing_claim' );
+
+		if ( empty( $claim ) ) {
+			return true;
+		}
+
+		if ( $claim->get_status() === 'draft' ) {
+			if ( hivepress()->woocommerce->is_active() && get_option( 'hp_product_listing_claim' ) ) {
+
+				// Add product to cart.
+				WC()->cart->empty_cart();
+				WC()->cart->add_to_cart( get_option( 'hp_product_listing_claim' ) );
+
+				return wc_get_page_permalink( 'checkout' );
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Renders listing claim submit complete page.
+	 *
+	 * @return string
+	 */
+	public function render_listing_claim_submit_complete_page() {
+		return ( new Blocks\Template(
+			[
+				'template' => 'listing_claim_submit_complete_page',
+
+				'context'  => [
+					'listing_claim' => hivepress()->request->get_context( 'listing_claim' ),
+				],
+			]
+		) )->render();
 	}
 }

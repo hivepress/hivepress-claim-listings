@@ -8,7 +8,6 @@
 namespace HivePress\Blocks;
 
 use HivePress\Helpers as hp;
-use HivePress\Controllers;
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
@@ -40,15 +39,12 @@ class Listing_Claim_Submit_Form extends Form {
 	 * Bootstraps block properties.
 	 */
 	protected function boot() {
-		if ( is_singular( 'hp_listing' ) ) {
 
-			// Set listing ID.
-			$this->values['listing_id'] = get_the_ID();
+		// Get listing.
+		$listing = $this->get_context( 'listing' );
 
-			// Set redirect URL.
-			if ( ! get_option( 'hp_listing_claim_enable_moderation' ) || ( class_exists( 'WooCommerce' ) && get_option( 'hp_product_listing_claim' ) ) ) {
-				$this->attributes['data-redirect'] = Controllers\Listing_Claim::get_url( 'submit_complete', [ 'listing_id' => get_the_ID() ] );
-			}
+		if ( hp\is_class_instance( $listing, '\HivePress\Models\Listing' ) ) {
+			$this->values['listing'] = $listing->get_id();
 		}
 
 		parent::boot();

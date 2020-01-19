@@ -17,10 +17,11 @@ return [
 
 		'fields' => [
 			'details' => [
-				'alias'    => 'post_content',
-				'type'     => 'textarea',
-				'required' => true,
-				'_order'   => 10,
+				'type'       => 'textarea',
+				'max_length' => 10240,
+				'required'   => true,
+				'_alias'     => 'post_content',
+				'_order'     => 10,
 			],
 		],
 	],
@@ -31,13 +32,13 @@ return [
 
 		'fields' => [
 			'listing' => [
-				'label'     => hivepress()->translator->get_string( 'listing' ),
-				'alias'     => 'post_parent',
-				'type'      => 'select',
-				'options'   => 'posts',
-				'post_type' => 'hp_listing',
-				'required'  => true,
-				'_order'    => 10,
+				'label'       => hivepress()->translator->get_string( 'listing' ),
+				'type'        => 'select',
+				'options'     => 'posts',
+				'option_args' => [ 'post_type' => 'hp_listing' ],
+				'required'    => true,
+				'_alias'      => 'post_parent',
+				'_order'      => 10,
 			],
 		],
 	],

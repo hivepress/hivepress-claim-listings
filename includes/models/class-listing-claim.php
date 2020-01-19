@@ -28,7 +28,13 @@ class Listing_Claim extends Post {
 		$args = hp\merge_arrays(
 			[
 				'fields' => [
-					'details' => [
+					'title'        => [
+						'type'       => 'text',
+						'max_length' => 256,
+						'_alias'     => 'post_title',
+					],
+
+					'details'      => [
 						'label'      => hivepress()->translator->get_string( 'details' ),
 						'type'       => 'textarea',
 						'max_length' => 10240,
@@ -36,13 +42,19 @@ class Listing_Claim extends Post {
 						'_alias'     => 'post_content',
 					],
 
-					'status'  => [
+					'status'       => [
 						'type'       => 'text',
 						'max_length' => 128,
 						'_alias'     => 'post_status',
 					],
 
-					'user'    => [
+					'created_date' => [
+						'type'   => 'date',
+						'format' => 'Y-m-d H:i:s',
+						'_alias' => 'post_date',
+					],
+
+					'user'         => [
 						'type'      => 'number',
 						'min_value' => 1,
 						'required'  => true,
@@ -50,7 +62,7 @@ class Listing_Claim extends Post {
 						'_model'    => 'user',
 					],
 
-					'listing' => [
+					'listing'      => [
 						'type'      => 'number',
 						'min_value' => 1,
 						'required'  => true,
