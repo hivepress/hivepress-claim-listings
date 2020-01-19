@@ -113,7 +113,7 @@ final class Listing_Claim extends Controller {
 		if ( current_user_can( 'edit_users' ) && $request->get_param( 'status' ) ) {
 			$status = sanitize_key( $request->get_param( 'status' ) );
 		} else {
-			if ( hivepress()->woocommerce->is_active() && get_option( 'hp_product_listing_claim' ) ) {
+			if ( hp\is_plugin_active( 'woocommerce' ) && get_option( 'hp_product_listing_claim' ) ) {
 				$status = 'draft';
 			} elseif ( get_option( 'hp_listing_claim_enable_moderation' ) ) {
 				$status = 'pending';
@@ -200,7 +200,7 @@ final class Listing_Claim extends Controller {
 		}
 
 		if ( $claim->get_status() === 'draft' ) {
-			if ( hivepress()->woocommerce->is_active() && get_option( 'hp_product_listing_claim' ) ) {
+			if ( hp\is_plugin_active( 'woocommerce' ) && get_option( 'hp_product_listing_claim' ) ) {
 
 				// Add product to cart.
 				WC()->cart->empty_cart();

@@ -37,7 +37,7 @@ final class Listing_Claim extends Component {
 		// Update claim status.
 		add_action( 'hivepress/v1/models/listing_claim/update_status', [ $this, 'update_claim_status' ], 10, 3 );
 
-		if ( hivepress()->woocommerce->is_active() ) {
+		if ( hp\is_plugin_active( 'woocommerce' ) ) {
 
 			// Update order status.
 			add_action( 'woocommerce_order_status_changed', [ $this, 'update_order_status' ], 10, 4 );
@@ -360,7 +360,7 @@ final class Listing_Claim extends Component {
 		// Get product.
 		$product = null;
 
-		if ( hivepress()->woocommerce->is_active() && get_option( 'hp_product_listing_claim' ) ) {
+		if ( hp\is_plugin_active( 'woocommerce' ) && get_option( 'hp_product_listing_claim' ) ) {
 			$product = wc_get_product( get_option( 'hp_product_listing_claim' ) );
 		}
 
