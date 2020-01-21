@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HivePress Claim Listings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-25 16:28+0000\n"
+"POT-Creation-Date: 2020-01-21 19:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -15,19 +15,17 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.3.1; wp-5.2.4"
 
-#: includes/components/class-listing-claim.php:278
+#: includes/components/class-listing-claim.php:86
+msgid "You've already submitted a claim."
+msgstr ""
+
+#: includes/components/class-listing-claim.php:377
 #, php-format
 msgid "Claim for %s"
 msgstr ""
 
-#: includes/components/class-listing-claim.php:396
-#: includes/configs/settings.php:43
-#: includes/emails/class-listing-claim-approve.php:51
-msgid "Claim Approved"
-msgstr ""
-
 #: includes/configs/post-types.php:21 includes/configs/post-types.php:27
-#: includes/configs/settings.php:17
+#: includes/configs/settings.php:15
 msgid "Claims"
 msgstr ""
 
@@ -56,36 +54,40 @@ msgstr ""
 msgid "No claims found."
 msgstr ""
 
-#: includes/configs/settings.php:23
+#: includes/configs/settings.php:26
 msgid "Choose a product that must be purchased in order to submit a claim."
 msgstr ""
 
-#: includes/configs/settings.php:32
+#: includes/configs/settings.php:35
 msgid "Manually approve new claims"
 msgstr ""
 
-#: includes/configs/settings.php:44
+#: includes/configs/settings.php:49
+#: includes/controllers/class-listing-claim.php:168
+#: includes/emails/class-listing-claim-approve.php:30
+msgid "Claim Approved"
+msgstr ""
+
+#: includes/configs/settings.php:50
 msgid "This email is sent to users when claim is approved."
 msgstr ""
 
-#: includes/configs/settings.php:46
-#: includes/emails/class-listing-claim-approve.php:52
+#: includes/configs/settings.php:52
 msgid ""
 "Hi, %user_name%! Your claim for listing \"%listing_title%\" has been "
 "approved, click on the following link to edit it: %listing_url%"
 msgstr ""
 
-#: includes/configs/settings.php:54
-#: includes/emails/class-listing-claim-reject.php:51
+#: includes/configs/settings.php:60
+#: includes/emails/class-listing-claim-reject.php:30
 msgid "Claim Rejected"
 msgstr ""
 
-#: includes/configs/settings.php:55
+#: includes/configs/settings.php:61
 msgid "This email is sent to users when claim is rejected."
 msgstr ""
 
-#: includes/configs/settings.php:57
-#: includes/emails/class-listing-claim-reject.php:52
+#: includes/configs/settings.php:63
 msgid ""
 "Hi, %user_name%! Unfortunately, your claim for listing \"%listing_title%\" "
 "has been rejected."
@@ -102,39 +104,39 @@ msgid ""
 msgstr ""
 
 #: includes/configs/strings.php:16
+msgid "You can't claim your own listings."
+msgstr ""
+
+#: includes/configs/strings.php:17
 #, php-format
 msgid ""
 "Thank you! Your claim for listing \"%s\" has been submitted and will be "
 "reviewed as soon as possible."
 msgstr ""
 
-#: includes/configs/strings.php:17
+#: includes/configs/strings.php:18
 #, php-format
 msgid ""
 "Thank you! Your claim for listing \"%s\" has been approved and you can start "
 "managing it."
 msgstr ""
 
-#: includes/controllers/class-listing-claim.php:61
-#: includes/emails/class-listing-claim-submit.php:51
+#: includes/controllers/class-listing-claim.php:153
+#: includes/emails/class-listing-claim-submit.php:30
 msgid "Claim Submitted"
 msgstr ""
 
-#: includes/controllers/class-listing-claim.php:132
-msgid "You've already submitted a claim."
-msgstr ""
-
-#: includes/emails/class-listing-claim-submit.php:52
+#: includes/emails/class-listing-claim-submit.php:31
 msgid ""
-"A new claim for listing \"%listing_title%\" %claim_url% has been submitted "
-"with the following details: %claim_details%"
+"A new claim for listing \"%listing_title%\" %listing_claim_url% has been "
+"submitted with the following details: %listing_claim_details%"
 msgstr ""
 
-#: includes/forms/class-listing-claim-submit.php:102
+#: includes/forms/class-listing-claim-submit.php:49
 msgid "Your claim has been submitted."
 msgstr ""
 
-#: includes/forms/class-listing-claim-submit.php:117
+#: includes/forms/class-listing-claim-submit.php:63
 msgid "Submit Claim"
 msgstr ""
 

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HivePress Claim Listings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-22 22:36+0000\n"
+"POT-Creation-Date: 2019-11-25 16:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -15,12 +15,12 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.3.1; wp-5.2.4"
 
-#: includes/components/class-listing-claim.php:276
+#: includes/components/class-listing-claim.php:278
 #, php-format
 msgid "Claim for %s"
 msgstr ""
 
-#: includes/components/class-listing-claim.php:394
+#: includes/components/class-listing-claim.php:396
 #: includes/configs/settings.php:43
 #: includes/emails/class-listing-claim-approve.php:51
 msgid "Claim Approved"
@@ -65,9 +65,7 @@ msgid "Manually approve new claims"
 msgstr ""
 
 #: includes/configs/settings.php:44
-msgid ""
-"This email is sent to users when claim is approved, the following tokens are "
-"available: %user_name%, %listing_title%, %listing_url%."
+msgid "This email is sent to users when claim is approved."
 msgstr ""
 
 #: includes/configs/settings.php:46
@@ -83,9 +81,7 @@ msgid "Claim Rejected"
 msgstr ""
 
 #: includes/configs/settings.php:55
-msgid ""
-"This email is sent to users when claim is rejected, the following tokens are "
-"available: %user_name%, %listing_title%."
+msgid "This email is sent to users when claim is rejected."
 msgstr ""
 
 #: includes/configs/settings.php:57

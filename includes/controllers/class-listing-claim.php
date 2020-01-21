@@ -163,7 +163,7 @@ final class Listing_Claim extends Controller {
 			)->order( [ 'created_date' => 'desc' ] )
 			->get_first();
 
-			// Set title.
+			// Set page title.
 			if ( $claim && $claim->get_listing__status() === 'publish' ) {
 				$title = esc_html__( 'Claim Approved', 'hivepress-claim-listings' );
 			}

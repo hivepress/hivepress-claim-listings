@@ -237,7 +237,7 @@ final class Listing_Claim extends Component {
 		$claim = Models\Listing_Claim::query()->filter(
 			[
 				'user'       => $order->get_user_id(),
-				'status__in' => [ 'draft', 'pending', 'publish' ],
+				'status__in' => [ 'draft', 'pending' ],
 			]
 		)->order( [ 'created_date' => 'desc' ] )
 		->get_first();
