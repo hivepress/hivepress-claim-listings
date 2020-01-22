@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @class Listing_Claim_Submit_Complete_Page
  */
-class Listing_Claim_Submit_Complete_Page extends Page {
+class Listing_Claim_Submit_Complete_Page extends Listing_Claim_Submit_Page {
 
 	/**
 	 * Class constructor.
@@ -28,26 +28,12 @@ class Listing_Claim_Submit_Complete_Page extends Page {
 		$args = hp\merge_trees(
 			[
 				'blocks' => [
-					'page_container' => [
+					'page_content' => [
 						'blocks' => [
-							'page_content' => [
-								'type'   => 'container',
-								'tag'    => 'main',
+							'listing_claim_complete_message' => [
+								'type'   => 'part',
+								'path'   => 'listing-claim/submit/listing-claim-complete-message',
 								'_order' => 10,
-
-								'blocks' => [
-									'page_title' => [
-										'type'   => 'part',
-										'path'   => 'page/page-title',
-										'_order' => 5,
-									],
-
-									'listing_claim_complete_message' => [
-										'type'   => 'part',
-										'path'   => 'listing-claim/submit/listing-claim-complete-message',
-										'_order' => 10,
-									],
-								],
 							],
 						],
 					],

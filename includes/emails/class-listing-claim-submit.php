@@ -28,7 +28,7 @@ class Listing_Claim_Submit extends Email {
 		$args = hp\merge_arrays(
 			[
 				'subject' => esc_html__( 'Claim Submitted', 'hivepress-claim-listings' ),
-				'body'    => hp\sanitize_html( __( 'A new claim for listing "%listing_title%" %listing_claim_url% has been submitted with the following details: %listing_claim_details%', 'hivepress-claim-listings' ) ),
+				'body'    => hp\sanitize_html( __( 'A new claim for listing "%listing_title%" %claim_url% has been submitted with the following details: %claim_details%', 'hivepress-claim-listings' ) ),
 			],
 			$args
 		);

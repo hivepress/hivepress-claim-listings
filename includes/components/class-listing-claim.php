@@ -131,9 +131,9 @@ final class Listing_Claim extends Component {
 					'recipient' => get_option( 'admin_email' ),
 
 					'tokens'    => [
-						'listing_title'         => $listing->get_title(),
-						'listing_claim_details' => $claim->get_details(),
-						'listing_claim_url'     => admin_url(
+						'listing_title' => $listing->get_title(),
+						'claim_details' => $claim->get_details(),
+						'claim_url'     => admin_url(
 							'post.php?' . http_build_query(
 								[
 									'action' => 'edit',
