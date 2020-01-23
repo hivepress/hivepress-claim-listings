@@ -398,7 +398,6 @@ final class Listing_Claim extends Component {
 						'blocks' => [
 							'listing_claim_submit_modal' => [
 								'type'   => 'modal',
-								'model'  => 'listing',
 								'title'  => hivepress()->translator->get_string( 'claim_listing' ),
 
 								'blocks' => [
