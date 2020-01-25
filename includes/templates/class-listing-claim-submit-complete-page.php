@@ -2,8 +2,6 @@
 /**
  * Listing claim submit complete page template.
  *
- * @template listing_claim_submit_complete_page
- * @description Listing claim submission page (completed).
  * @package HivePress\Templates
  */
 
@@ -19,46 +17,31 @@ defined( 'ABSPATH' ) || exit;
  *
  * @class Listing_Claim_Submit_Complete_Page
  */
-class Listing_Claim_Submit_Complete_Page extends Listing_Submit_Page {
+class Listing_Claim_Submit_Complete_Page extends Listing_Claim_Submit_Page {
 
 	/**
-	 * Template name.
-	 *
-	 * @var string
-	 */
-	protected static $name;
-
-	/**
-	 * Template blocks.
-	 *
-	 * @var array
-	 */
-	protected static $blocks = [];
-
-	/**
-	 * Class initializer.
+	 * Class constructor.
 	 *
 	 * @param array $args Template arguments.
 	 */
-	public static function init( $args = [] ) {
+	public function __construct( $args = [] ) {
 		$args = hp\merge_trees(
 			[
 				'blocks' => [
 					'page_content' => [
 						'blocks' => [
 							'listing_claim_complete_message' => [
-								'type'     => 'element',
-								'filepath' => 'listing-claim/submit/listing-claim-complete-message',
-								'order'    => 10,
+								'type'   => 'part',
+								'path'   => 'listing-claim/submit/listing-claim-complete-message',
+								'_order' => 10,
 							],
 						],
 					],
 				],
 			],
-			$args,
-			'blocks'
+			$args
 		);
 
-		parent::init( $args );
+		parent::__construct( $args );
 	}
 }

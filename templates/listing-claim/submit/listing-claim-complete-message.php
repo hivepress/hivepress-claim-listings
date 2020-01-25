@@ -2,12 +2,12 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-if ( get_current_user_id() === $listing->get_user_id() ) :
+if ( $listing_claim->get_status() === 'publish' ) :
 	?>
-	<p><?php printf( esc_html__( 'Thank you! Your claim for listing "%s" has been approved and you can start managing it.', 'hivepress-claim-listings' ), $listing->get_title() ); ?></p>
-	<button type="button" class="button" data-component="link" data-url="<?php echo esc_url( hivepress()->router->get_url( 'listing/edit_listing', [ 'listing_id' => $listing->get_id() ] ) ); ?>"><?php esc_html_e( 'Edit Listing', 'hivepress-claim-listings' ); ?></button>
+	<p><?php printf( esc_html( hivepress()->translator->get_string( 'claim_for_listing_has_been_approved' ) ), $listing_claim->get_listing__title() ); ?></p>
+	<button type="button" class="button" data-component="link" data-url="<?php echo esc_url( hivepress()->router->get_url( 'listing_edit_page', [ 'listing_id' => $listing_claim->get_listing__id() ] ) ); ?>"><?php echo esc_html( hivepress()->translator->get_string( 'edit_listing' ) ); ?></button>
 <?php else : ?>
-	<p><?php printf( esc_html__( 'Thank you! Your claim for listing "%s" has been submitted and will be reviewed as soon as possible.', 'hivepress-claim-listings' ), $listing->get_title() ); ?></p>
-	<button type="button" class="button" data-component="link" data-url="<?php echo esc_url( hivepress()->router->get_url( 'user/view_account' ) ); ?>"><?php esc_html_e( 'Return to My Account', 'hivepress-claim-listings' ); ?></button>
+	<p><?php printf( esc_html( hivepress()->translator->get_string( 'claim_for_listing_has_been_submitted' ) ), $listing_claim->get_listing__title() ); ?></p>
+	<button type="button" class="button" data-component="link" data-url="<?php echo esc_url( hivepress()->router->get_url( 'user_account_page' ) ); ?>"><?php echo esc_html( hivepress()->translator->get_string( 'return_to_my_account' ) ); ?></button>
 	<?php
 endif;

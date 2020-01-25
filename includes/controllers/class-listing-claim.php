@@ -20,64 +20,55 @@ defined( 'ABSPATH' ) || exit;
  *
  * @class Listing_Claim
  */
-class Listing_Claim extends Controller {
+final class Listing_Claim extends Controller {
 
 	/**
-	 * Controller name.
-	 *
-	 * @var string
-	 */
-	protected static $name;
-
-	/**
-	 * Controller routes.
-	 *
-	 * @var array
-	 */
-	protected static $routes = [];
-
-	/**
-	 * Class initializer.
+	 * Class constructor.
 	 *
 	 * @param array $args Controller arguments.
 	 */
-	public static function init( $args = [] ) {
+	public function __construct( $args = [] ) {
 		$args = hp\merge_arrays(
 			[
 				'routes' => [
-					[
-						'path'      => '/listing-claims',
-						'rest'      => true,
-
-						'endpoints' => [
-							[
-								'methods' => 'POST',
-								'action'  => 'submit_claim',
-							],
-						],
+					'listing_claims_resource'            => [
+						'path' => '/listing-claims',
+						'rest' => true,
 					],
 
-					'submit_complete' => [
-						'title'    => esc_html__( 'Claim Submitted', 'hivepress-claim-listings' ),
-						'path'     => '/claim-listing/(?P<listing_id>\d+)/complete',
-						'redirect' => 'redirect_listing_claim_submit_complete_page',
-						'action'   => 'render_listing_claim_submit_complete_page',
+					'listing_claim_submit_action'        => [
+						'base'   => 'listing_claims_resource',
+						'method' => 'POST',
+						'action' => [ $this, 'submit_listing_claim' ],
+						'rest'   => true,
+					],
+
+					'listing_claim_submit_page'          => [
+						'path' => '/claim-listing',
+					],
+
+					'listing_claim_submit_complete_page' => [
+						'base'     => 'listing_claim_submit_page',
+						'path'     => '/complete',
+						'title'    => [ $this, 'get_listing_claim_submit_complete_title' ],
+						'redirect' => [ $this, 'redirect_listing_claim_submit_complete_page' ],
+						'action'   => [ $this, 'render_listing_claim_submit_complete_page' ],
 					],
 				],
 			],
 			$args
 		);
 
-		parent::init( $args );
+		parent::__construct( $args );
 	}
 
 	/**
-	 * Submits claim.
+	 * Submits listing claim.
 	 *
 	 * @param WP_REST_Request $request API request.
 	 * @return WP_Rest_Response
 	 */
-	public function submit_claim( $request ) {
+	public function submit_listing_claim( $request ) {
 
 		// Check authentication.
 		if ( ! is_user_logged_in() ) {
@@ -85,60 +76,44 @@ class Listing_Claim extends Controller {
 		}
 
 		// Validate form.
-		$form = new Forms\Listing_Claim_Submit();
-
-		$form->set_values( $request->get_params() );
+		$form = ( new Forms\Listing_Claim_Submit() )->set_values( $request->get_params() );
 
 		if ( ! $form->validate() ) {
 			return hp\rest_error( 400, $form->get_errors() );
 		}
 
 		// Get user.
-		$user_id = $request->get_param( 'user_id' ) ? $request->get_param( 'user_id' ) : get_current_user_id();
-		$user    = get_userdata( $user_id );
+		$user_id = $request->get_param( 'user' ) ? $request->get_param( 'user' ) : get_current_user_id();
 
-		if ( false === $user ) {
+		$user = Models\User::query()->get_by_id( $user_id );
+
+		if ( empty( $user ) ) {
 			return hp\rest_error( 400 );
 		}
 
-		if ( get_current_user_id() !== $user->ID && ! current_user_can( 'edit_users' ) ) {
+		// Check permissions.
+		if ( ! current_user_can( 'edit_users' ) && get_current_user_id() !== $user->get_id() ) {
 			return hp\rest_error( 403 );
 		}
 
-		// Get listing ID.
-		$listing_id = hp\get_post_id(
-			[
-				'post_type'   => 'hp_listing',
-				'post_status' => 'publish',
-				'post__in'    => [ absint( $request->get_param( 'listing_id' ) ) ],
-			]
-		);
+		// Get listing.
+		$listing = Models\Listing::query()->get_by_id( $request->get_param( 'listing' ) );
 
-		if ( 0 === $listing_id ) {
+		if ( empty( $listing ) || $listing->get_status() !== 'publish' || $listing->is_verified() ) {
 			return hp\rest_error( 400 );
 		}
 
-		// Get claim ID.
-		$claim_id = hp\get_post_id(
-			[
-				'post_type'   => 'hp_listing_claim',
-				'post_status' => [ 'draft', 'pending', 'publish' ],
-				'post_parent' => $listing_id,
-				'author'      => $user_id,
-			]
-		);
-
-		if ( 0 !== $claim_id ) {
-			return hp\rest_error( 400, esc_html__( "You've already submitted a claim for this listing", 'hivepress-claim-listings' ) );
+		if ( $listing->get_user__id() === $user->get_id() ) {
+			return hp\rest_error( 403, hivepress()->translator->get_string( 'you_cant_claim_your_own_listings' ) );
 		}
 
 		// Get claim status.
 		$status = 'publish';
 
-		if ( $request->get_param( 'status' ) && current_user_can( 'edit_users' ) ) {
+		if ( current_user_can( 'edit_users' ) && $request->get_param( 'status' ) ) {
 			$status = sanitize_key( $request->get_param( 'status' ) );
 		} else {
-			if ( class_exists( 'WooCommerce' ) && get_option( 'hp_product_listing_claim' ) ) {
+			if ( hp\is_plugin_active( 'woocommerce' ) && get_option( 'hp_product_listing_claim' ) ) {
 				$status = 'draft';
 			} elseif ( get_option( 'hp_listing_claim_enable_moderation' ) ) {
 				$status = 'pending';
@@ -146,31 +121,58 @@ class Listing_Claim extends Controller {
 		}
 
 		// Add claim.
-		$claim = new Models\Listing_Claim();
-
-		$claim->fill(
+		$claim = ( new Models\Listing_Claim() )->fill(
 			array_merge(
 				$form->get_values(),
 				[
-					'status'     => $status,
-					'user_id'    => $user->ID,
-					'listing_id' => $listing_id,
+					'status'  => $status,
+					'user'    => $user->get_id(),
+					'listing' => $listing->get_id(),
 				]
 			)
 		);
 
 		if ( ! $claim->save() ) {
-			return hp\rest_error( 400 );
+			return hp\rest_error( 400, $claim->_get_errors() );
 		}
 
-		return new \WP_Rest_Response(
+		return hp\rest_response(
+			201,
 			[
-				'data' => [
-					'id' => $claim->get_id(),
-				],
-			],
-			200
+				'id' => $claim->get_id(),
+			]
 		);
+	}
+
+	/**
+	 * Gets listing claim submit complete title.
+	 *
+	 * @return string
+	 */
+	public function get_listing_claim_submit_complete_title() {
+		$title = esc_html__( 'Claim Submitted', 'hivepress-claim-listings' );
+
+		if ( is_user_logged_in() ) {
+
+			// Get claim.
+			$claim = Models\Listing_Claim::query()->filter(
+				[
+					'user'       => get_current_user_id(),
+					'status__in' => [ 'draft', 'pending', 'publish' ],
+				]
+			)->order( [ 'created_date' => 'desc' ] )
+			->get_first();
+
+			// Set page title.
+			if ( $claim && $claim->get_status() === 'publish' ) {
+				$title = esc_html__( 'Claim Approved', 'hivepress-claim-listings' );
+			}
+
+			// Set request context.
+			hivepress()->request->set_context( 'listing_claim', $claim );
+		}
+
+		return $title;
 	}
 
 	/**
@@ -182,36 +184,23 @@ class Listing_Claim extends Controller {
 
 		// Check authentication.
 		if ( ! is_user_logged_in() ) {
-			return add_query_arg( 'redirect', rawurlencode( hp\get_current_url() ), User::get_url( 'login_user' ) );
+			return hivepress()->router->get_url(
+				'user_login_page',
+				[
+					'redirect' => hivepress()->router->get_current_url(),
+				]
+			);
 		}
 
-		// Get listing ID.
-		$listing_id = hp\get_post_id(
-			[
-				'post_type'   => 'hp_listing',
-				'post_status' => 'publish',
-				'post__in'    => [ absint( get_query_var( 'hp_listing_id' ) ) ],
-			]
-		);
+		// Get claim.
+		$claim = hivepress()->request->get_context( 'listing_claim' );
 
-		if ( 0 === $listing_id ) {
+		if ( empty( $claim ) ) {
 			return true;
 		}
 
-		// Get claim ID.
-		$claim_id = hp\get_post_id(
-			[
-				'post_type'   => 'hp_listing_claim',
-				'post_status' => [ 'draft', 'pending', 'publish' ],
-				'post_parent' => $listing_id,
-				'author'      => get_current_user_id(),
-			]
-		);
-
-		if ( 0 === $claim_id ) {
-			return true;
-		} elseif ( get_post_status( $claim_id ) === 'draft' ) {
-			if ( class_exists( 'WooCommerce' ) && get_option( 'hp_product_listing_claim' ) ) {
+		if ( $claim->get_status() === 'draft' ) {
+			if ( hp\is_plugin_active( 'woocommerce' ) && get_option( 'hp_product_listing_claim' ) ) {
 
 				// Add product to cart.
 				WC()->cart->empty_cart();
@@ -237,7 +226,7 @@ class Listing_Claim extends Controller {
 				'template' => 'listing_claim_submit_complete_page',
 
 				'context'  => [
-					'listing' => Models\Listing::get( get_query_var( 'hp_listing_id' ) ),
+					'listing_claim' => hivepress()->request->get_context( 'listing_claim' ),
 				],
 			]
 		) )->render();

@@ -20,70 +20,60 @@ defined( 'ABSPATH' ) || exit;
 class Listing_Claim extends Post {
 
 	/**
-	 * Model name.
-	 *
-	 * @var string
-	 */
-	protected static $name;
-
-	/**
-	 * Model fields.
-	 *
-	 * @var array
-	 */
-	protected static $fields = [];
-
-	/**
-	 * Model aliases.
-	 *
-	 * @var array
-	 */
-	protected static $aliases = [];
-
-	/**
-	 * Class initializer.
+	 * Class constructor.
 	 *
 	 * @param array $args Model arguments.
 	 */
-	public static function init( $args = [] ) {
+	public function __construct( $args = [] ) {
 		$args = hp\merge_arrays(
 			[
-				'fields'  => [
-					'details'    => [
-						'label'      => esc_html__( 'Details', 'hivepress-claim-listings' ),
+				'fields' => [
+					'title'        => [
+						'type'       => 'text',
+						'max_length' => 256,
+						'_alias'     => 'post_title',
+					],
+
+					'details'      => [
+						'label'      => hivepress()->translator->get_string( 'details' ),
 						'type'       => 'textarea',
 						'max_length' => 10240,
 						'required'   => true,
+						'_alias'     => 'post_content',
 					],
 
-					'status'     => [
+					'status'       => [
 						'type'       => 'text',
 						'max_length' => 128,
+						'_alias'     => 'post_status',
 					],
 
-					'user_id'    => [
+					'created_date' => [
+						'type'   => 'date',
+						'format' => 'Y-m-d H:i:s',
+						'_alias' => 'post_date',
+					],
+
+					'user'         => [
 						'type'      => 'number',
-						'min_value' => 0,
+						'min_value' => 1,
 						'required'  => true,
+						'_alias'    => 'post_author',
+						'_model'    => 'user',
 					],
 
-					'listing_id' => [
+					'listing'      => [
 						'type'      => 'number',
-						'min_value' => 0,
+						'min_value' => 1,
 						'required'  => true,
+						'_alias'    => 'post_parent',
+						'_model'    => 'listing',
 					],
-				],
-
-				'aliases' => [
-					'post_content' => 'details',
-					'post_status'  => 'status',
-					'post_author'  => 'user_id',
-					'post_parent'  => 'listing_id',
 				],
 			],
 			$args
 		);
 
-		parent::init( $args );
+		parent::__construct( $args );
 	}
 }
