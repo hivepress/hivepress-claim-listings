@@ -99,7 +99,7 @@ final class Listing_Claim extends Controller {
 		// Get listing.
 		$listing = Models\Listing::query()->get_by_id( $request->get_param( 'listing' ) );
 
-		if ( empty( $listing ) || $listing->get_status() !== 'publish' ) {
+		if ( empty( $listing ) || $listing->get_status() !== 'publish' || $listing->is_verified() ) {
 			return hp\rest_error( 400 );
 		}
 
@@ -164,7 +164,7 @@ final class Listing_Claim extends Controller {
 			->get_first();
 
 			// Set page title.
-			if ( $claim && $claim->get_listing__status() === 'publish' ) {
+			if ( $claim && $claim->get_status() === 'publish' ) {
 				$title = esc_html__( 'Claim Approved', 'hivepress-claim-listings' );
 			}
 

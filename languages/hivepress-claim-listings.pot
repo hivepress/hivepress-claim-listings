@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HivePress Claim Listings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-21 19:26+0000\n"
+"POT-Creation-Date: 2020-01-25 21:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -19,7 +19,7 @@ msgstr ""
 msgid "You've already submitted a claim."
 msgstr ""
 
-#: includes/components/class-listing-claim.php:377
+#: includes/components/class-listing-claim.php:387
 #, php-format
 msgid "Claim for %s"
 msgstr ""
@@ -128,8 +128,8 @@ msgstr ""
 
 #: includes/emails/class-listing-claim-submit.php:31
 msgid ""
-"A new claim for listing \"%listing_title%\" %listing_claim_url% has been "
-"submitted with the following details: %listing_claim_details%"
+"A new claim for listing \"%listing_title%\" %claim_url% has been submitted "
+"with the following details: %claim_details%"
 msgstr ""
 
 #: includes/forms/class-listing-claim-submit.php:49

@@ -164,21 +164,23 @@ final class Listing_Claim extends Component {
 				)->save();
 
 				// Send email.
-				( new Emails\Listing_Claim_Approve(
-					[
-						'recipient' => $user->get_email(),
+				if ( 'pending' === $old_status ) {
+					( new Emails\Listing_Claim_Approve(
+						[
+							'recipient' => $user->get_email(),
 
-						'tokens'    => [
-							'user_name'     => $user->get_display_name(),
-							'listing_title' => $listing->get_title(),
-							'listing_url'   => hivepress()->router->get_url( 'listing_edit_page', [ 'listing_id' => $listing->get_id() ] ),
-						],
-					]
-				) )->send();
+							'tokens'    => [
+								'user_name'     => $user->get_display_name(),
+								'listing_title' => $listing->get_title(),
+								'listing_url'   => hivepress()->router->get_url( 'listing_edit_page', [ 'listing_id' => $listing->get_id() ] ),
+							],
+						]
+					) )->send();
+				}
 			} else {
 
 				// Remove verified status.
-				$listing->set_verified( null );
+				$listing->set_verified( false );
 
 				if ( $listing->get_user__id() === $user->get_id() ) {
 
@@ -197,16 +199,18 @@ final class Listing_Claim extends Component {
 				$listing->save();
 
 				// Send email.
-				( new Emails\Listing_Claim_Reject(
-					[
-						'recipient' => $user->get_email(),
+				if ( 'pending' === $old_status ) {
+					( new Emails\Listing_Claim_Reject(
+						[
+							'recipient' => $user->get_email(),
 
-						'tokens'    => [
-							'user_name'     => $user->get_display_name(),
-							'listing_title' => $listing->get_title(),
-						],
-					]
-				) )->send();
+							'tokens'    => [
+								'user_name'     => $user->get_display_name(),
+								'listing_title' => $listing->get_title(),
+							],
+						]
+					) )->send();
+				}
 			}
 		}
 	}
@@ -364,7 +368,7 @@ final class Listing_Claim extends Component {
 			$product = wc_get_product( get_option( 'hp_product_listing_claim' ) );
 		}
 
-		if ( $product ) {
+		if ( $product || ! get_option( 'hp_listing_claim_enable_moderation' ) ) {
 
 			// Set form arguments.
 			$form = hp\merge_arrays(
@@ -372,12 +376,19 @@ final class Listing_Claim extends Component {
 				[
 					'message'  => null,
 					'redirect' => hivepress()->router->get_url( 'listing_claim_submit_complete_page' ),
-
-					'button'   => [
-						'label' => sprintf( esc_html__( 'Claim for %s', 'hivepress-claim-listings' ), hivepress()->woocommerce->get_product_price_text( $product ) ),
-					],
 				]
 			);
+
+			if ( $product ) {
+				$form = hp\merge_arrays(
+					$form,
+					[
+						'button' => [
+							'label' => sprintf( esc_html__( 'Claim for %s', 'hivepress-claim-listings' ), hivepress()->woocommerce->get_product_price_text( $product ) ),
+						],
+					]
+				);
+			}
 		}
 
 		return $form;

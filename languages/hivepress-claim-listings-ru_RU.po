@@ -2,10 +2,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HivePress Claim Listings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-21 19:26+0000\n"
-"PO-Revision-Date: 2020-01-21 19:31+0000\n"
-"Last-Translator: admin <admin@admin.com>\n"
-"Language-Team: Russian\n"
+"POT-Creation-Date: 2020-01-25 21:40+0000\n"
+"PO-Revision-Date: 2020-01-25 21:41+0000\n"
+"Last-Translator: Tiesto <admin@admin.com>\n"
+"Language-Team: Русский\n"
 "Language: ru_RU\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10 >= 2 && "
 "n%10<=4 &&(n%100<10||n%100 >= 20)? 1 : 2);\n"
@@ -19,7 +19,7 @@ msgstr ""
 msgid "You've already submitted a claim."
 msgstr "Вы уже отправили запрос."
 
-#: includes/components/class-listing-claim.php:377
+#: includes/components/class-listing-claim.php:387
 #, php-format
 msgid "Claim for %s"
 msgstr "Запросить доступ за %s"
@@ -138,11 +138,11 @@ msgstr "Запрос отправлен"
 
 #: includes/emails/class-listing-claim-submit.php:31
 msgid ""
-"A new claim for listing \"%listing_title%\" %listing_claim_url% has been "
-"submitted with the following details: %listing_claim_details%"
+"A new claim for listing \"%listing_title%\" %claim_url% has been submitted "
+"with the following details: %claim_details%"
 msgstr ""
-"Новый запрос доступа к объявлению \"%listing_title%\" %listing_claim_url% "
-"был отправлен со следующими деталями: %listing_claim_details%"
+"Новый запрос доступа к объявлению \"%listing_title%\" %claim_url% был "
+"отправлен со следующими деталями: %claim_details%"
 
 #: includes/forms/class-listing-claim-submit.php:49
 msgid "Your claim has been submitted."
