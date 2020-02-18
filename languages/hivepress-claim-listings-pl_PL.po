@@ -1,0 +1,169 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: HivePress Claim Listings\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-01-25 21:40+0000\n"
+"PO-Revision-Date: 2020-02-18 13:37+0000\n"
+"Last-Translator: admin <admin@hivepress.local>\n"
+"Language-Team: Polski\n"
+"Language: pl_PL\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 "
+"&&(n%100<10||n%100 >= 20)? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.3.1; wp-5.3.2"
+
+#: includes/components/class-listing-claim.php:86
+msgid "You've already submitted a claim."
+msgstr "Złożyłeś już wniosek."
+
+#: includes/components/class-listing-claim.php:387
+#, php-format
+msgid "Claim for %s"
+msgstr "Wnioskuj za %s"
+
+#: includes/configs/post-types.php:21 includes/configs/post-types.php:27
+#: includes/configs/settings.php:15
+msgid "Claims"
+msgstr "Wnioski"
+
+#: includes/configs/post-types.php:22
+msgid "Claim"
+msgstr "Wniosek"
+
+#: includes/configs/post-types.php:23
+msgctxt "claim"
+msgid "Add New"
+msgstr "Dodaj nowy"
+
+#: includes/configs/post-types.php:24 includes/configs/post-types.php:26
+msgid "Add Claim"
+msgstr "Dodaj wniosek"
+
+#: includes/configs/post-types.php:25
+msgid "Edit Claim"
+msgstr "Edytuj wniosek"
+
+#: includes/configs/post-types.php:28
+msgid "Search Claims"
+msgstr "Szukaj wniosków"
+
+#: includes/configs/post-types.php:29 includes/configs/post-types.php:30
+msgid "No claims found."
+msgstr "Nie znaleziono żadnych wniosków."
+
+#: includes/configs/settings.php:26
+msgid "Choose a product that must be purchased in order to submit a claim."
+msgstr "Wybierz produkt, który musi zostać kupiony dla złożenia wniosku."
+
+#: includes/configs/settings.php:35
+msgid "Manually approve new claims"
+msgstr "Ręcznie zatwierdzaj nowe wnioski"
+
+#: includes/configs/settings.php:49
+#: includes/controllers/class-listing-claim.php:168
+#: includes/emails/class-listing-claim-approve.php:30
+msgid "Claim Approved"
+msgstr "Wniosek zatwierdzony"
+
+#: includes/configs/settings.php:50
+msgid "This email is sent to users when claim is approved."
+msgstr "Ten e-mail jest wysyłany użytkownikom po zatwierdzeniu wniosku."
+
+#: includes/configs/settings.php:52
+msgid ""
+"Hi, %user_name%! Your claim for listing \"%listing_title%\" has been "
+"approved, click on the following link to edit it: %listing_url%"
+msgstr ""
+"Cześć %user_name%! Twój wniosek o dostęp do ogłoszenia \"%listing_title%\" "
+"został zatwierdzony, aby je edytować kliknij w podany link: %listing_url%"
+
+#: includes/configs/settings.php:60
+#: includes/emails/class-listing-claim-reject.php:30
+msgid "Claim Rejected"
+msgstr "Wniosek odrzucony"
+
+#: includes/configs/settings.php:61
+msgid "This email is sent to users when claim is rejected."
+msgstr "Ten e-mail jest wysyłany użytkownikom po odrzuceniu wniosku."
+
+#: includes/configs/settings.php:63
+msgid ""
+"Hi, %user_name%! Unfortunately, your claim for listing \"%listing_title%\" "
+"has been rejected."
+msgstr ""
+"Cześć %user_name%! Przykro nam, ale twój wniosek o dostęp do ogłoszenia "
+"\"%listing_title%\" został odrzucony."
+
+#: includes/configs/strings.php:14
+msgid "Claim Listing"
+msgstr "Wnioskuj o dostęp"
+
+#: includes/configs/strings.php:15
+msgid ""
+"Please provide details that will help us verify that you're the owner of "
+"this listing."
+msgstr ""
+"Proszę podać szczegóły, które pozwolą nam sprawdzić, że jesteś właścicielem "
+"tego ogłoszenia."
+
+#: includes/configs/strings.php:16
+msgid "You can't claim your own listings."
+msgstr "Nie możesz wnioskować o dostęp do własnych ogłoszeń."
+
+#: includes/configs/strings.php:17
+#, php-format
+msgid ""
+"Thank you! Your claim for listing \"%s\" has been submitted and will be "
+"reviewed as soon as possible."
+msgstr ""
+"Dziękuję! Twój wniosek o dostęp do ogłoszenia \"%s\" został złożony i będzie "
+"rozpatrzony jak najszybciej."
+
+#: includes/configs/strings.php:18
+#, php-format
+msgid ""
+"Thank you! Your claim for listing \"%s\" has been approved and you can start "
+"managing it."
+msgstr ""
+"Dziękuję! Twój wniosek o dostęp do ogłoszenia \"%s\" został zatwierdzony, "
+"ogłoszenie jest dostępne do zarządzania."
+
+#: includes/controllers/class-listing-claim.php:153
+#: includes/emails/class-listing-claim-submit.php:30
+msgid "Claim Submitted"
+msgstr "Wniosek złożony"
+
+#: includes/emails/class-listing-claim-submit.php:31
+msgid ""
+"A new claim for listing \"%listing_title%\" %claim_url% has been submitted "
+"with the following details: %claim_details%"
+msgstr ""
+"Nowy wniosek o dostęp do ogłoszenia \"%listing_title%\" %claim_url% został "
+"złożony z podanymi szczegółami: %claim_details%"
+
+#: includes/forms/class-listing-claim-submit.php:49
+msgid "Your claim has been submitted."
+msgstr "Twój wniosek został złożony."
+
+#: includes/forms/class-listing-claim-submit.php:63
+msgid "Submit Claim"
+msgstr "Złóż wniosek"
+
+#. Name of the plugin
+msgid "HivePress Claim Listings"
+msgstr "HivePress Dostęp do ogłoszeń"
+
+#. Description of the plugin
+msgid "Charge users for claiming listings."
+msgstr "Pobieraj opłatę za dostęp do ogłoszeń."
+
+#. Author of the plugin
+msgid "HivePress"
+msgstr "HivePress"
+
+#. Author URI of the plugin
+msgid "https://hivepress.io/"
+msgstr "https://hivepress.io/"
