@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @class Listing_Claim_Submit_Page
  */
-class Listing_Claim_Submit_Page extends Page_Wide {
+abstract class Listing_Claim_Submit_Page extends Page_Wide {
 
 	/**
 	 * Class constructor.
