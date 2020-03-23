@@ -3,9 +3,9 @@ msgstr ""
 "Project-Id-Version: HivePress Claim Listings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-25 21:40+0000\n"
-"PO-Revision-Date: 2020-03-09 18:50+0000\n"
-"Last-Translator: admin <admin@hivepress.local>\n"
-"Language-Team: Українська\n"
+"PO-Revision-Date: 2020-03-23 15:09+0000\n"
+"Last-Translator: admin <admin@admin.com>\n"
+"Language-Team: Ukrainian\n"
 "Language: uk\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10 >= 2 && "
 "n%10<=4 &&(n%100<10||n%100 >= 20)? 1 : 2);\n"
@@ -17,72 +17,60 @@ msgstr ""
 
 #: includes/components/class-listing-claim.php:86
 msgid "You've already submitted a claim."
-msgstr ""
-"Ви вже відправили запит.\n"
+msgstr "Ви вже відправили запит."
 
 #: includes/components/class-listing-claim.php:387
 #, php-format
 msgid "Claim for %s"
-msgstr ""
-"Запросити доступ за %s\n"
+msgstr "Запросити доступ за %s"
 
 #: includes/configs/post-types.php:21 includes/configs/post-types.php:27
 #: includes/configs/settings.php:15
 msgid "Claims"
-msgstr ""
-"Запити\n"
+msgstr "Запити"
 
 #: includes/configs/post-types.php:22
 msgid "Claim"
-msgstr ""
-"Запит\n"
+msgstr "Запит"
 
 #: includes/configs/post-types.php:23
 msgctxt "claim"
 msgid "Add New"
-msgstr ""
-"Додати новий\n"
+msgstr "Додати новий"
 
 #: includes/configs/post-types.php:24 includes/configs/post-types.php:26
 msgid "Add Claim"
-msgstr ""
-"Додати запит\n"
+msgstr "Додати запит"
 
 #: includes/configs/post-types.php:25
 msgid "Edit Claim"
-msgstr ""
-"Редагувати запит\n"
+msgstr "Редагувати запит"
 
 #: includes/configs/post-types.php:28
 msgid "Search Claims"
-msgstr "Шукати оголошення"
+msgstr "Шукати запити"
 
 #: includes/configs/post-types.php:29 includes/configs/post-types.php:30
 msgid "No claims found."
-msgstr ""
-"Запитів не знайдено.\n"
+msgstr "Запитів не знайдено."
 
 #: includes/configs/settings.php:26
 msgid "Choose a product that must be purchased in order to submit a claim."
-msgstr ""
-"Виберіть продукт, який повинен бути куплений для відправки запиту.\n"
+msgstr "Виберіть продукт, який повинен бути куплений для відправки запиту."
 
 #: includes/configs/settings.php:35
 msgid "Manually approve new claims"
-msgstr ""
-"Вручну схвалювати нові запити\n"
+msgstr "Вручну схвалювати нові запити"
 
 #: includes/configs/settings.php:49
 #: includes/controllers/class-listing-claim.php:168
 #: includes/emails/class-listing-claim-approve.php:30
 msgid "Claim Approved"
-msgstr ""
-"Запит схвалено\n"
+msgstr "Запит схвалено"
 
 #: includes/configs/settings.php:50
 msgid "This email is sent to users when claim is approved."
-msgstr ""
-"Цей лист відправляється користувачам при схваленні запиту.\n"
+msgstr "Цей лист відправляється користувачам при схваленні запиту."
 
 #: includes/configs/settings.php:52
 msgid ""
@@ -90,18 +78,16 @@ msgid ""
 "approved, click on the following link to edit it: %listing_url%"
 msgstr ""
 "Привіт, %user_name%! Ваш запит на доступ до оголошення \"%listing_title%\" "
-"було схвалено, клікніть на це посилання щоб редагувати його: %listing_url%\n"
+"було схвалено, клікніть на це посилання щоб редагувати його: %listing_url%"
 
 #: includes/configs/settings.php:60
 #: includes/emails/class-listing-claim-reject.php:30
 msgid "Claim Rejected"
-msgstr ""
-"Запит відхилено\n"
+msgstr "Запит відхилено"
 
 #: includes/configs/settings.php:61
 msgid "This email is sent to users when claim is rejected."
-msgstr ""
-"Цей лист відправляється користувачам у разі відхилення запиту.\n"
+msgstr "Цей лист відправляється користувачам у разі відхилення запиту."
 
 #: includes/configs/settings.php:63
 msgid ""
@@ -109,12 +95,11 @@ msgid ""
 "has been rejected."
 msgstr ""
 "Привіт, %user_name%! На жаль, ваш запит доступу до оголошення "
-"\"%listing_title%\" було відхилено.\n"
+"\"%listing_title%\" було відхилено."
 
 #: includes/configs/strings.php:14
 msgid "Claim Listing"
-msgstr ""
-"Запросити доступ\n"
+msgstr "Запросити доступ"
 
 #: includes/configs/strings.php:15
 msgid ""
@@ -122,13 +107,11 @@ msgid ""
 "this listing."
 msgstr ""
 "Будь ласка, надайте деталі які допоможуть нам перевірити, що ви є власником "
-"цього оголошення.\n"
-"\n"
+"цього оголошення."
 
 #: includes/configs/strings.php:16
 msgid "You can't claim your own listings."
-msgstr ""
-"Ви не можете запитувати доступ до власних оголошень.\n"
+msgstr "Ви не можете запитувати доступ до власних оголошень."
 
 #: includes/configs/strings.php:17
 #, php-format
@@ -137,7 +120,7 @@ msgid ""
 "reviewed as soon as possible."
 msgstr ""
 "Дякуємо! Ваш запит доступу до оголошення \"%s\" було відправлено і буде "
-"розглянутий якнайшвидше.\n"
+"розглянуто якнайшвидше."
 
 #: includes/configs/strings.php:18
 #, php-format
@@ -146,13 +129,12 @@ msgid ""
 "managing it."
 msgstr ""
 "Дякуємо! Ваш запит доступу до оголошення \"%s\" було схвалено і ви можете "
-"почати керувати ним.\n"
+"почати керувати ним."
 
 #: includes/controllers/class-listing-claim.php:153
 #: includes/emails/class-listing-claim-submit.php:30
 msgid "Claim Submitted"
-msgstr ""
-"Запит відправлено\n"
+msgstr "Запит відправлено"
 
 #: includes/emails/class-listing-claim-submit.php:31
 msgid ""
@@ -160,7 +142,7 @@ msgid ""
 "with the following details: %claim_details%"
 msgstr ""
 "Новий запит доступу до оголошення \"%listing_title%\"%claim_url% був "
-"відправлений з наступними деталями: %claim_details%\n"
+"відправлений з наступними деталями: %claim_details%"
 
 #: includes/forms/class-listing-claim-submit.php:49
 msgid "Your claim has been submitted."
@@ -168,25 +150,20 @@ msgstr "Ваш запит відправлено."
 
 #: includes/forms/class-listing-claim-submit.php:63
 msgid "Submit Claim"
-msgstr ""
-"Відправити запит\n"
+msgstr "Відправити запит"
 
 #. Name of the plugin
 msgid "HivePress Claim Listings"
-msgstr ""
-"HivePress Доступ до оголошень\n"
+msgstr "HivePress Доступ до оголошень"
 
 #. Description of the plugin
 msgid "Charge users for claiming listings."
-msgstr ""
-"Беріть плату з користувачів за доступ до оголошень.\n"
+msgstr "Беріть плату з користувачів за доступ до оголошень."
 
 #. Author of the plugin
 msgid "HivePress"
-msgstr ""
-"HivePress\n"
+msgstr "HivePress"
 
 #. Author URI of the plugin
 msgid "https://hivepress.io/"
-msgstr ""
-"https://hivepress.io/\n"
+msgstr "https://hivepress.io/"
