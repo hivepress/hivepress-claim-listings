@@ -202,7 +202,7 @@ final class Listing_Claim extends Controller {
 		// Get claim.
 		$claim = hivepress()->request->get_context( 'listing_claim' );
 
-		if ( empty( $claim ) ) {
+		if ( empty( $claim ) || $claim->get_user__id() !== get_current_user_id() || ! in_array( $claim->get_status(), [ 'draft', 'pending', 'publish' ], true ) ) {
 			return true;
 		}
 
