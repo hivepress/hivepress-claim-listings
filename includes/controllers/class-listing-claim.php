@@ -44,7 +44,7 @@ final class Listing_Claim extends Controller {
 					],
 
 					'listing_claim_submit_page'          => [
-						'path' => '/claim-listing',
+						'path' => '/claim-listing/?(?P<listing_claim_id>\d+)?',
 					],
 
 					'listing_claim_submit_complete_page' => [
@@ -82,9 +82,10 @@ final class Listing_Claim extends Controller {
 			return hp\rest_error( 400, $form->get_errors() );
 		}
 
-		// Get user.
+		// Get user ID.
 		$user_id = $request->get_param( 'user' ) ? $request->get_param( 'user' ) : get_current_user_id();
 
+		// Get user.
 		$user = Models\User::query()->get_by_id( $user_id );
 
 		if ( empty( $user ) ) {
@@ -155,13 +156,19 @@ final class Listing_Claim extends Controller {
 		if ( is_user_logged_in() ) {
 
 			// Get claim.
-			$claim = Models\Listing_Claim::query()->filter(
-				[
-					'user'       => get_current_user_id(),
-					'status__in' => [ 'draft', 'pending', 'publish' ],
-				]
-			)->order( [ 'created_date' => 'desc' ] )
-			->get_first();
+			$claim = null;
+
+			if ( hivepress()->request->get_param( 'listing_claim_id' ) ) {
+				$claim = Models\Listing_Claim::query()->get_by_id( hivepress()->request->get_param( 'listing_claim_id' ) );
+			} else {
+				$claim = Models\Listing_Claim::query()->filter(
+					[
+						'user'       => get_current_user_id(),
+						'status__in' => [ 'draft', 'pending', 'publish' ],
+					]
+				)->order( [ 'created_date' => 'desc' ] )
+				->get_first();
+			}
 
 			// Set page title.
 			if ( $claim && $claim->get_status() === 'publish' ) {
@@ -195,16 +202,20 @@ final class Listing_Claim extends Controller {
 		// Get claim.
 		$claim = hivepress()->request->get_context( 'listing_claim' );
 
-		if ( empty( $claim ) ) {
+		if ( empty( $claim ) || $claim->get_user__id() !== get_current_user_id() || ! in_array( $claim->get_status(), [ 'draft', 'pending', 'publish' ], true ) ) {
 			return true;
 		}
 
 		if ( $claim->get_status() === 'draft' ) {
-			if ( hp\is_plugin_active( 'woocommerce' ) && get_option( 'hp_product_listing_claim' ) ) {
+
+			// Get product ID.
+			$product_id = absint( get_option( 'hp_product_listing_claim' ) );
+
+			if ( hp\is_plugin_active( 'woocommerce' ) && $product_id ) {
 
 				// Add product to cart.
 				WC()->cart->empty_cart();
-				WC()->cart->add_to_cart( get_option( 'hp_product_listing_claim' ) );
+				WC()->cart->add_to_cart( $product_id, 1, 0, [], [ 'hp_listing_claim' => $claim->get_id() ] );
 
 				return wc_get_page_permalink( 'checkout' );
 			}
