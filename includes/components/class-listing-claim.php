@@ -237,28 +237,31 @@ final class Listing_Claim extends Component {
 			return;
 		}
 
-		// Get claim.
-		$claim = Models\Listing_Claim::query()->filter(
-			[
-				'user'       => $order->get_user_id(),
-				'status__in' => [ 'draft', 'pending' ],
-			]
-		)->order( [ 'created_date' => 'desc' ] )
-		->get_first();
+		foreach ( $order->get_items() as $item ) {
+			if ( $item->get_product_id() === $product_id ) {
 
-		if ( empty( $claim ) ) {
-			return;
-		}
+				// Get claim.
+				$claim = Models\Listing_Claim::query()->get_by_id( $item->get_meta( 'hp_listing_claim', true, 'edit' ) );
 
-		// Update status.
-		if ( in_array( $new_status, [ 'processing', 'completed' ], true ) ) {
-			$claim->fill(
-				[
-					'status' => get_option( 'hp_listing_claim_enable_moderation' ) ? 'pending' : 'publish',
-				]
-			)->save();
-		} elseif ( in_array( $new_status, [ 'failed', 'cancelled', 'refunded' ], true ) ) {
-			$claim->set_status( 'trash' )->save();
+				if ( $claim ) {
+
+					// Get status.
+					$status = 'publish';
+
+					if ( get_option( 'hp_listing_claim_enable_moderation' ) && in_array( $claim->get_status(), [ 'draft', 'pending' ], true ) ) {
+						$status = 'pending';
+					}
+
+					// Update status.
+					if ( in_array( $new_status, [ 'processing', 'completed' ], true ) ) {
+						$claim->set_status( $status )->save();
+					} elseif ( in_array( $new_status, [ 'failed', 'cancelled', 'refunded' ], true ) ) {
+						$claim->set_status( 'trash' )->save();
+					}
+				}
+
+				break;
+			}
 		}
 	}
 

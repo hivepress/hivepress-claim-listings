@@ -204,7 +204,7 @@ final class Listing_Claim extends Controller {
 
 				// Add product to cart.
 				WC()->cart->empty_cart();
-				WC()->cart->add_to_cart( get_option( 'hp_product_listing_claim' ) );
+				WC()->cart->add_to_cart( get_option( 'hp_product_listing_claim' ), 1, 0, [], [ 'hp_listing_claim' => $claim->get_id() ] );
 
 				return wc_get_page_permalink( 'checkout' );
 			}
