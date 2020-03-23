@@ -44,7 +44,7 @@ final class Listing_Claim extends Controller {
 					],
 
 					'listing_claim_submit_page'          => [
-						'path' => '/claim-listing',
+						'path' => '/claim-listing/?(?P<listing_claim_id>\d+)?',
 					],
 
 					'listing_claim_submit_complete_page' => [
@@ -156,13 +156,19 @@ final class Listing_Claim extends Controller {
 		if ( is_user_logged_in() ) {
 
 			// Get claim.
-			$claim = Models\Listing_Claim::query()->filter(
-				[
-					'user'       => get_current_user_id(),
-					'status__in' => [ 'draft', 'pending', 'publish' ],
-				]
-			)->order( [ 'created_date' => 'desc' ] )
-			->get_first();
+			$claim = null;
+
+			if ( hivepress()->request->get_param( 'listing_claim_id' ) ) {
+				$claim = Models\Listing_Claim::query()->get_by_id( hivepress()->request->get_param( 'listing_claim_id' ) );
+			} else {
+				$claim = Models\Listing_Claim::query()->filter(
+					[
+						'user'       => get_current_user_id(),
+						'status__in' => [ 'draft', 'pending', 'publish' ],
+					]
+				)->order( [ 'created_date' => 'desc' ] )
+				->get_first();
+			}
 
 			// Set page title.
 			if ( $claim && $claim->get_status() === 'publish' ) {
