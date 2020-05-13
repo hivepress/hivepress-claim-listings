@@ -101,7 +101,7 @@ final class Listing_Claim extends Component {
 		$claim = Models\Listing_Claim::query()->get_by_id( $claim_id );
 
 		// Set title.
-		$claim->set_title( '#' . $claim->get_id() )->save();
+		$claim->set_title( '#' . $claim->get_id() )->save_title();
 	}
 
 	/**
@@ -241,7 +241,7 @@ final class Listing_Claim extends Component {
 			if ( $item->get_product_id() === $product_id ) {
 
 				// Get claim.
-				$claim = Models\Listing_Claim::query()->get_by_id( $item->get_meta( 'hp_listing_claim', true, 'edit' ) );
+				$claim = Models\Listing_Claim::query()->get_by_id( $item->get_meta( 'hp_listing_claim' ) );
 
 				if ( $claim ) {
 
@@ -293,7 +293,7 @@ final class Listing_Claim extends Component {
 			if ( $item->get_product_id() === $product_id ) {
 
 				// Get claim.
-				$claim = Models\Listing_Claim::query()->get_by_id( $item->get_meta( 'hp_listing_claim', true, 'edit' ) );
+				$claim = Models\Listing_Claim::query()->get_by_id( $item->get_meta( 'hp_listing_claim' ) );
 
 				if ( $claim && in_array( $claim->get_status(), [ 'pending', 'publish' ], true ) ) {
 
