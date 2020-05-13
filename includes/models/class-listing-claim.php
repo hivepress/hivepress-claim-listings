@@ -38,7 +38,6 @@ class Listing_Claim extends Post {
 						'label'      => hivepress()->translator->get_string( 'details' ),
 						'type'       => 'textarea',
 						'max_length' => 10240,
-						'required'   => true,
 						'_alias'     => 'post_content',
 					],
 
