@@ -51,6 +51,9 @@ final class Listing_Claim extends Component {
 			// Manage admin columns.
 			add_filter( 'manage_hp_listing_claim_posts_columns', [ $this, 'add_admin_columns' ] );
 			add_action( 'manage_hp_listing_claim_posts_custom_column', [ $this, 'render_admin_columns' ], 10, 2 );
+
+			// Alter meta boxes.
+			add_filter( 'hivepress/v1/meta_boxes/listing_claim_settings', [ $this, 'alter_claim_settings_meta_box' ] );
 		} else {
 
 			// Alter submission form.
@@ -372,6 +375,20 @@ final class Listing_Claim extends Component {
 
 			echo $output;
 		}
+	}
+
+	/**
+	 * Alters claim settings meta box.
+	 *
+	 * @param array $meta_box Meta box arguments.
+	 * @return array
+	 */
+	public function alter_claim_settings_meta_box( $meta_box ) {
+		if ( in_array( get_post_status(), [ 'pending', 'publish' ], true ) ) {
+			$meta_box['fields']['listing']['disabled'] = true;
+		}
+
+		return $meta_box;
 	}
 
 	/**
