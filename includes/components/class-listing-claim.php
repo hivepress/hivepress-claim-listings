@@ -31,8 +31,9 @@ final class Listing_Claim extends Component {
 		// Validate claim.
 		add_filter( 'hivepress/v1/models/listing_claim/errors', [ $this, 'validate_claim' ], 10, 2 );
 
-		// Create claim.
-		add_action( 'hivepress/v1/models/listing_claim/create', [ $this, 'create_claim' ] );
+		// Update claim.
+		add_action( 'hivepress/v1/models/listing_claim/create', [ $this, 'update_claim' ] );
+		add_action( 'hivepress/v1/models/listing_claim/update', [ $this, 'update_claim' ] );
 
 		// Update claim status.
 		add_action( 'hivepress/v1/models/listing_claim/update_status', [ $this, 'update_claim_status' ], 10, 3 );
@@ -51,6 +52,9 @@ final class Listing_Claim extends Component {
 			// Manage admin columns.
 			add_filter( 'manage_hp_listing_claim_posts_columns', [ $this, 'add_admin_columns' ] );
 			add_action( 'manage_hp_listing_claim_posts_custom_column', [ $this, 'render_admin_columns' ], 10, 2 );
+
+			// Alter meta boxes.
+			add_filter( 'hivepress/v1/meta_boxes/listing_claim_settings', [ $this, 'alter_claim_settings_meta_box' ] );
 		} else {
 
 			// Alter submission form.
@@ -91,17 +95,20 @@ final class Listing_Claim extends Component {
 	}
 
 	/**
-	 * Creates claim.
+	 * Updates claim.
 	 *
 	 * @param int $claim_id Claim ID.
 	 */
-	public function create_claim( $claim_id ) {
+	public function update_claim( $claim_id ) {
 
 		// Get claim.
 		$claim = Models\Listing_Claim::query()->get_by_id( $claim_id );
 
-		// Set title.
-		$claim->set_title( '#' . $claim->get_id() )->save();
+		if ( ! $claim->get_title() ) {
+
+			// Update title.
+			$claim->set_title( '#' . $claim->get_id() )->save_title();
+		}
 	}
 
 	/**
@@ -160,8 +167,15 @@ final class Listing_Claim extends Component {
 					[
 						'verified' => true,
 						'user'     => $user->get_id(),
+						'vendor'   => null,
 					]
-				)->save();
+				)->save(
+					[
+						'verified',
+						'user',
+						'vendor',
+					]
+				);
 
 				// Send email.
 				if ( 'pending' === $old_status ) {
@@ -192,11 +206,22 @@ final class Listing_Claim extends Component {
 					)->get_first_id();
 
 					// Set user.
-					$listing->set_user( $user_id );
+					$listing->fill(
+						[
+							'user'   => $user_id,
+							'vendor' => null,
+						]
+					);
 				}
 
 				// Update listing.
-				$listing->save();
+				$listing->save(
+					[
+						'verified',
+						'user',
+						'vendor',
+					]
+				);
 
 				// Send email.
 				if ( 'pending' === $old_status ) {
@@ -241,7 +266,7 @@ final class Listing_Claim extends Component {
 			if ( $item->get_product_id() === $product_id ) {
 
 				// Get claim.
-				$claim = Models\Listing_Claim::query()->get_by_id( $item->get_meta( 'hp_listing_claim', true, 'edit' ) );
+				$claim = Models\Listing_Claim::query()->get_by_id( $item->get_meta( 'hp_listing_claim' ) );
 
 				if ( $claim ) {
 
@@ -254,9 +279,9 @@ final class Listing_Claim extends Component {
 
 					// Update status.
 					if ( in_array( $new_status, [ 'processing', 'completed' ], true ) ) {
-						$claim->set_status( $status )->save();
+						$claim->set_status( $status )->save_status();
 					} elseif ( in_array( $new_status, [ 'failed', 'cancelled', 'refunded' ], true ) ) {
-						$claim->set_status( 'trash' )->save();
+						$claim->set_status( 'trash' )->save_status();
 					}
 				}
 
@@ -293,7 +318,7 @@ final class Listing_Claim extends Component {
 			if ( $item->get_product_id() === $product_id ) {
 
 				// Get claim.
-				$claim = Models\Listing_Claim::query()->get_by_id( $item->get_meta( 'hp_listing_claim', true, 'edit' ) );
+				$claim = Models\Listing_Claim::query()->get_by_id( $item->get_meta( 'hp_listing_claim' ) );
 
 				if ( $claim && in_array( $claim->get_status(), [ 'pending', 'publish' ], true ) ) {
 
@@ -352,8 +377,22 @@ final class Listing_Claim extends Component {
 				) . '">' . esc_html( get_the_title( $listing_id ) ) . '</a>';
 			}
 
-			echo $output;
+			echo wp_kses_data( $output );
 		}
+	}
+
+	/**
+	 * Alters claim settings meta box.
+	 *
+	 * @param array $meta_box Meta box arguments.
+	 * @return array
+	 */
+	public function alter_claim_settings_meta_box( $meta_box ) {
+		if ( in_array( get_post_status(), [ 'pending', 'publish' ], true ) ) {
+			$meta_box['fields']['listing']['disabled'] = true;
+		}
+
+		return $meta_box;
 	}
 
 	/**
@@ -387,6 +426,7 @@ final class Listing_Claim extends Component {
 					$form,
 					[
 						'button' => [
+							/* translators: %s: price. */
 							'label' => sprintf( esc_html__( 'Claim for %s', 'hivepress-claim-listings' ), hivepress()->woocommerce->get_product_price_text( $product ) ),
 						],
 					]
