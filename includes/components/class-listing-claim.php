@@ -31,8 +31,9 @@ final class Listing_Claim extends Component {
 		// Validate claim.
 		add_filter( 'hivepress/v1/models/listing_claim/errors', [ $this, 'validate_claim' ], 10, 2 );
 
-		// Create claim.
-		add_action( 'hivepress/v1/models/listing_claim/create', [ $this, 'create_claim' ] );
+		// Update claim.
+		add_action( 'hivepress/v1/models/listing_claim/create', [ $this, 'update_claim' ] );
+		add_action( 'hivepress/v1/models/listing_claim/update', [ $this, 'update_claim' ] );
 
 		// Update claim status.
 		add_action( 'hivepress/v1/models/listing_claim/update_status', [ $this, 'update_claim_status' ], 10, 3 );
@@ -94,17 +95,20 @@ final class Listing_Claim extends Component {
 	}
 
 	/**
-	 * Creates claim.
+	 * Updates claim.
 	 *
 	 * @param int $claim_id Claim ID.
 	 */
-	public function create_claim( $claim_id ) {
+	public function update_claim( $claim_id ) {
 
 		// Get claim.
 		$claim = Models\Listing_Claim::query()->get_by_id( $claim_id );
 
-		// Set title.
-		$claim->set_title( '#' . $claim->get_id() )->save_title();
+		if ( ! $claim->get_title() ) {
+
+			// Update title.
+			$claim->set_title( '#' . $claim->get_id() )->save_title();
+		}
 	}
 
 	/**
