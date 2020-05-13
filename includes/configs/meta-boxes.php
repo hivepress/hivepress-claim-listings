@@ -19,7 +19,6 @@ return [
 			'details' => [
 				'type'       => 'textarea',
 				'max_length' => 10240,
-				'required'   => true,
 				'_alias'     => 'post_content',
 				'_order'     => 10,
 			],
