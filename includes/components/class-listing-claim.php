@@ -160,8 +160,15 @@ final class Listing_Claim extends Component {
 					[
 						'verified' => true,
 						'user'     => $user->get_id(),
+						'vendor'   => null,
 					]
-				)->save();
+				)->save(
+					[
+						'verified',
+						'user',
+						'vendor',
+					]
+				);
 
 				// Send email.
 				if ( 'pending' === $old_status ) {
@@ -192,11 +199,22 @@ final class Listing_Claim extends Component {
 					)->get_first_id();
 
 					// Set user.
-					$listing->set_user( $user_id );
+					$listing->fill(
+						[
+							'user'   => $user_id,
+							'vendor' => null,
+						]
+					);
 				}
 
 				// Update listing.
-				$listing->save();
+				$listing->save(
+					[
+						'verified',
+						'user',
+						'vendor',
+					]
+				);
 
 				// Send email.
 				if ( 'pending' === $old_status ) {
@@ -254,9 +272,9 @@ final class Listing_Claim extends Component {
 
 					// Update status.
 					if ( in_array( $new_status, [ 'processing', 'completed' ], true ) ) {
-						$claim->set_status( $status )->save();
+						$claim->set_status( $status )->save_status();
 					} elseif ( in_array( $new_status, [ 'failed', 'cancelled', 'refunded' ], true ) ) {
-						$claim->set_status( 'trash' )->save();
+						$claim->set_status( 'trash' )->save_status();
 					}
 				}
 
