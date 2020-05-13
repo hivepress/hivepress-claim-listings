@@ -377,7 +377,7 @@ final class Listing_Claim extends Component {
 				) . '">' . esc_html( get_the_title( $listing_id ) ) . '</a>';
 			}
 
-			echo $output;
+			echo wp_kses_data( $output );
 		}
 	}
 
@@ -426,6 +426,7 @@ final class Listing_Claim extends Component {
 					$form,
 					[
 						'button' => [
+							/* translators: %s: price. */
 							'label' => sprintf( esc_html__( 'Claim for %s', 'hivepress-claim-listings' ), hivepress()->woocommerce->get_product_price_text( $product ) ),
 						],
 					]
