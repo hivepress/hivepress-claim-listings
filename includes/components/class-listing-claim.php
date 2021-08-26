@@ -36,7 +36,7 @@ final class Listing_Claim extends Component {
 		add_action( 'hivepress/v1/models/listing_claim/update', [ $this, 'update_claim' ] );
 
 		// Update claim status.
-		add_action( 'hivepress/v1/models/listing_claim/update_status', [ $this, 'update_claim_status' ], 10, 3 );
+		add_action( 'hivepress/v1/models/listing_claim/update_status', [ $this, 'update_claim_status' ], 10, 4 );
 
 		if ( hp\is_plugin_active( 'woocommerce' ) ) {
 
@@ -117,11 +117,9 @@ final class Listing_Claim extends Component {
 	 * @param int    $claim_id Claim ID.
 	 * @param string $new_status New status.
 	 * @param string $old_status Old status.
+	 * @param object $claim Claim object.
 	 */
-	public function update_claim_status( $claim_id, $new_status, $old_status ) {
-
-		// Get claim.
-		$claim = Models\Listing_Claim::query()->get_by_id( $claim_id );
+	public function update_claim_status( $claim_id, $new_status, $old_status, $claim ) {
 
 		// Get listing.
 		$listing = $claim->get_listing();
@@ -184,6 +182,9 @@ final class Listing_Claim extends Component {
 							'recipient' => $user->get_email(),
 
 							'tokens'    => [
+								'user'          => $user,
+								'listing'       => $listing,
+								'claim'         => $claim,
 								'user_name'     => $user->get_display_name(),
 								'listing_title' => $listing->get_title(),
 								'listing_url'   => hivepress()->router->get_url( 'listing_edit_page', [ 'listing_id' => $listing->get_id() ] ),
@@ -230,6 +231,9 @@ final class Listing_Claim extends Component {
 							'recipient' => $user->get_email(),
 
 							'tokens'    => [
+								'user'          => $user,
+								'listing'       => $listing,
+								'claim'         => $claim,
 								'user_name'     => $user->get_display_name(),
 								'listing_title' => $listing->get_title(),
 							],
