@@ -35,6 +35,7 @@ return [
 				'type'        => 'select',
 				'options'     => 'posts',
 				'option_args' => [ 'post_type' => 'hp_listing' ],
+				'source'      => hivepress()->router->get_url( 'listings_resource' ),
 				'required'    => true,
 				'_alias'      => 'post_parent',
 				'_order'      => 10,
