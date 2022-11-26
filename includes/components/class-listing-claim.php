@@ -462,10 +462,6 @@ final class Listing_Claim extends Component {
 									'listing_claim_submit_form' => [
 										'type'       => 'listing_claim_submit_form',
 										'_order'     => 10,
-
-										'attributes' => [
-											'class' => [ 'hp-form--narrow' ],
-										],
 									],
 								],
 							],
