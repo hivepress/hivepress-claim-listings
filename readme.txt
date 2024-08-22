@@ -1,8 +1,8 @@
 === HivePress Claim Listings ===
 Contributors: hivepress
 Tags: hivepress, claim listings, directory, listings, classifieds
-Requires at least: 4.9
-Tested up to: 6.1
+Requires at least: 5.0
+Tested up to: 6.6
 Requires PHP: 7.0
 Stable tag: 1.1.3
 License: GPLv3
@@ -14,7 +14,7 @@ Charge users for claiming listings.
 
 HivePress Claim Listings is an extension for [HivePress](https://wordpress.org/plugins/hivepress/) plugin. It allows you to charge users for claiming listings.
 
-[Demo](https://demo.hivepress.io/) | [Docs](https://help.hivepress.io/category/41-claim-listings) | [Support](https://community.hivepress.io/?utm_medium=referral&utm_source=wordpress.org)
+[Demo](https://listinghive.hivepress.io/) | [Docs](https://help.hivepress.io/category/41-claim-listings) | [Support](https://community.hivepress.io/)
 
 == Changelog ==
 
