@@ -100,7 +100,11 @@ final class Listing_Claim extends Controller {
 		// Get listing.
 		$listing = Models\Listing::query()->get_by_id( $request->get_param( 'listing' ) );
 
-		if ( empty( $listing ) || $listing->get_status() !== 'publish' || $listing->is_verified() ) {
+		if ( empty( $listing ) || $listing->get_status() !== 'publish' ) {
+			return hp\rest_error( 404 );
+		}
+
+		if ( ! hivepress()->listing_claim->is_claimable( $listing ) || $listing->is_verified() ) {
 			return hp\rest_error( 400 );
 		}
 
