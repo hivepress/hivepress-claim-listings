@@ -2,9 +2,9 @@
 Contributors: hivepress
 Tags: hivepress, claim listings, directory, listings, classifieds
 Requires at least: 5.0
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.1.3
+Stable tag: 1.1.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 

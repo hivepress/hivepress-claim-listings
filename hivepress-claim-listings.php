@@ -2,7 +2,7 @@
 /**
  * Plugin Name: HivePress Claim Listings
  * Description: Charge users for claiming listings.
- * Version: 1.1.3
+ * Version: 1.1.4
  * Author: HivePress
  * Author URI: https://hivepress.io/
  * Text Domain: hivepress-claim-listings
@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 // Register extension directory.
 add_filter(
 	'hivepress/v1/extensions',
-	function( $extensions ) {
+	function ( $extensions ) {
 		$extensions[] = __DIR__;
 
 		return $extensions;
