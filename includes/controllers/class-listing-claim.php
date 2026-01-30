@@ -113,12 +113,10 @@ final class Listing_Claim extends Controller {
 
 		if ( current_user_can( 'edit_users' ) && $request->get_param( 'status' ) ) {
 			$status = sanitize_key( $request->get_param( 'status' ) );
-		} else {
-			if ( hp\is_plugin_active( 'woocommerce' ) && get_option( 'hp_product_listing_claim' ) ) {
-				$status = 'draft';
-			} elseif ( get_option( 'hp_listing_claim_enable_moderation' ) ) {
-				$status = 'pending';
-			}
+		} elseif ( hp\is_plugin_active( 'woocommerce' ) && get_option( 'hp_product_listing_claim' ) ) {
+			$status = 'draft';
+		} elseif ( get_option( 'hp_listing_claim_enable_moderation' ) ) {
+			$status = 'pending';
 		}
 
 		// Add claim.
@@ -155,28 +153,30 @@ final class Listing_Claim extends Controller {
 
 		if ( is_user_logged_in() ) {
 
-			// Get claim.
-			$claim = null;
+			// Set query arguments.
+			$args = [
+				'user' => get_current_user_id(),
+			];
 
 			if ( hivepress()->request->get_param( 'listing_claim_id' ) ) {
-				$claim = Models\Listing_Claim::query()->get_by_id( hivepress()->request->get_param( 'listing_claim_id' ) );
+				$args['id__in'] = [ hivepress()->request->get_param( 'listing_claim_id' ) ];
 			} else {
-				$claim = Models\Listing_Claim::query()->filter(
-					[
-						'user'       => get_current_user_id(),
-						'status__in' => [ 'draft', 'pending', 'publish' ],
-					]
-				)->order( [ 'created_date' => 'desc' ] )
-				->get_first();
+				$args['status__in'] = [ 'draft', 'pending', 'publish' ];
 			}
 
-			// Set page title.
-			if ( $claim && $claim->get_status() === 'publish' ) {
-				$title = esc_html__( 'Claim Approved', 'hivepress-claim-listings' );
-			}
+			// Get claim.
+			$claim = Models\Listing_Claim::query()->filter( $args )->order( [ 'created_date' => 'desc' ] )->get_first();
 
-			// Set request context.
-			hivepress()->request->set_context( 'listing_claim', $claim );
+			if ( $claim ) {
+
+				// Set page title.
+				if ( $claim->get_status() === 'publish' ) {
+					$title = esc_html__( 'Claim Approved', 'hivepress-claim-listings' );
+				}
+
+				// Set request context.
+				hivepress()->request->set_context( 'listing_claim', $claim );
+			}
 		}
 
 		return $title;
