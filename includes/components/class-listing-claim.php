@@ -61,10 +61,42 @@ final class Listing_Claim extends Component {
 			add_filter( 'hivepress/v1/forms/listing_claim_submit', [ $this, 'alter_submission_form' ] );
 
 			// Alter templates.
-			add_filter( 'hivepress/v1/templates/listing_view_page', [ $this, 'alter_listing_view_page' ] );
+			add_filter( 'hivepress/v1/templates/listing_view_page/blocks', [ $this, 'alter_listing_view_page' ], 10, 2 );
 		}
 
 		parent::__construct( $args );
+	}
+
+	/**
+	 * Checks if the listing is claimable.
+	 *
+	 * @param  object $listing Listing object.
+	 * @return bool
+	 */
+	public function is_claimable( $listing ) {
+		$claimable = true;
+
+		// Get category IDs.
+		$category_ids = array_filter( (array) get_option( 'hp_listing_claim_categories' ) );
+
+		if ( $category_ids ) {
+			if ( $listing->get_categories__id() ) {
+
+				// Get child category IDs.
+				foreach ( $category_ids as $category_id ) {
+					$category_ids = array_merge( $category_ids, get_term_children( $category_id, 'hp_listing_category' ) );
+				}
+
+				// Check listing.
+				if ( ! array_intersect( (array) $listing->get_categories__id(), $category_ids ) ) {
+					$claimable = false;
+				}
+			} else {
+				$claimable = false;
+			}
+		}
+
+		return $claimable;
 	}
 
 	/**
@@ -444,14 +476,19 @@ final class Listing_Claim extends Component {
 	/**
 	 * Alters listing view page.
 	 *
-	 * @param array $template Template arguments.
+	 * @param array  $blocks Template blocks.
+	 * @param object $template Template object.
 	 * @return array
 	 */
-	public function alter_listing_view_page( $template ) {
-		return hp\merge_trees(
-			$template,
-			[
-				'blocks' => [
+	public function alter_listing_view_page( $blocks, $template ) {
+
+		// Get listing.
+		$listing = $template->get_context( 'listing' );
+
+		if ( $listing && $this->is_claimable( $listing ) ) {
+			$blocks = hivepress()->template->merge_blocks(
+				$blocks,
+				[
 					'listing_actions_primary' => [
 						'blocks' => [
 							'listing_claim_submit_modal' => [
@@ -460,8 +497,8 @@ final class Listing_Claim extends Component {
 
 								'blocks' => [
 									'listing_claim_submit_form' => [
-										'type'       => 'listing_claim_submit_form',
-										'_order'     => 10,
+										'type'   => 'listing_claim_submit_form',
+										'_order' => 10,
 									],
 								],
 							],
@@ -473,8 +510,10 @@ final class Listing_Claim extends Component {
 							],
 						],
 					],
-				],
-			]
-		);
+				]
+			);
+		}
+
+		return $blocks;
 	}
 }
