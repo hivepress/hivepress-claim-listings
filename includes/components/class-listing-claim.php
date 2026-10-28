@@ -305,18 +305,15 @@ final class Listing_Claim extends Component {
 				$claim = Models\Listing_Claim::query()->get_by_id( $item->get_meta( 'hp_listing_claim' ) );
 
 				if ( $claim ) {
-
-					// Get status.
-					$status = 'publish';
-
-					if ( get_option( 'hp_listing_claim_enable_moderation' ) && in_array( $claim->get_status(), [ 'draft', 'pending' ], true ) ) {
-						$status = 'pending';
-					}
-
-					// Update status.
 					if ( in_array( $new_status, [ 'processing', 'completed' ], true ) ) {
-						$claim->set_status( $status )->save_status();
-					} elseif ( in_array( $new_status, [ 'failed', 'cancelled', 'refunded' ], true ) ) {
+
+						// Submit claim.
+						if ( $claim->get_status() === 'draft' ) {
+							$claim->set_status( get_option( 'hp_listing_claim_enable_moderation' ) ? 'pending' : 'publish' )->save_status();
+						}
+					} elseif ( in_array( $new_status, [ 'cancelled', 'refunded' ], true ) || ( 'failed' === $new_status && $claim->get_status() !== 'draft' ) ) {
+
+						// Reject claim.
 						$claim->set_status( 'trash' )->save_status();
 					}
 				}
