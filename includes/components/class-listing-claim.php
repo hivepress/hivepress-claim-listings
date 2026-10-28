@@ -225,10 +225,6 @@ final class Listing_Claim extends Component {
 					) )->send();
 				}
 			} else {
-
-				// Remove verified status.
-				$listing->set_verified( false );
-
 				if ( $listing->get_user__id() === $user->get_id() ) {
 
 					// Get user ID.
@@ -238,23 +234,21 @@ final class Listing_Claim extends Component {
 						]
 					)->get_first_id();
 
-					// Set user.
+					// Update listing.
 					$listing->fill(
 						[
-							'user'   => $user_id,
-							'vendor' => null,
+							'verified' => false,
+							'user'     => $user_id,
+							'vendor'   => null,
+						]
+					)->save(
+						[
+							'verified',
+							'user',
+							'vendor',
 						]
 					);
 				}
-
-				// Update listing.
-				$listing->save(
-					[
-						'verified',
-						'user',
-						'vendor',
-					]
-				);
 
 				// Send email.
 				if ( 'pending' === $old_status ) {
