@@ -4,7 +4,7 @@
  * Description: Charge users for claiming listings.
  * Requires at least: 5.7
  * Requires PHP: 7.4
- * Version: 1.1.4
+ * Version: 1.1.5
  * Author: HivePress
  * Author URI: https://hivepress.io/
  * License: GPLv3
