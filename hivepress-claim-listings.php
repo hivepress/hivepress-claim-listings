@@ -7,6 +7,8 @@
  * Version: 1.1.4
  * Author: HivePress
  * Author URI: https://hivepress.io/
+ * License: GPLv3
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: hivepress-claim-listings
  * Domain Path: /languages/
  *
