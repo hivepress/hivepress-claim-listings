@@ -225,10 +225,6 @@ final class Listing_Claim extends Component {
 					) )->send();
 				}
 			} else {
-
-				// Remove verified status.
-				$listing->set_verified( false );
-
 				if ( $listing->get_user__id() === $user->get_id() ) {
 
 					// Get user ID.
@@ -238,23 +234,21 @@ final class Listing_Claim extends Component {
 						]
 					)->get_first_id();
 
-					// Set user.
+					// Update listing.
 					$listing->fill(
 						[
-							'user'   => $user_id,
-							'vendor' => null,
+							'verified' => false,
+							'user'     => $user_id,
+							'vendor'   => null,
+						]
+					)->save(
+						[
+							'verified',
+							'user',
+							'vendor',
 						]
 					);
 				}
-
-				// Update listing.
-				$listing->save(
-					[
-						'verified',
-						'user',
-						'vendor',
-					]
-				);
 
 				// Send email.
 				if ( 'pending' === $old_status ) {
@@ -305,18 +299,25 @@ final class Listing_Claim extends Component {
 				$claim = Models\Listing_Claim::query()->get_by_id( $item->get_meta( 'hp_listing_claim' ) );
 
 				if ( $claim ) {
-
-					// Get status.
-					$status = 'publish';
-
-					if ( get_option( 'hp_listing_claim_enable_moderation' ) && in_array( $claim->get_status(), [ 'draft', 'pending' ], true ) ) {
-						$status = 'pending';
-					}
-
-					// Update status.
 					if ( in_array( $new_status, [ 'processing', 'completed' ], true ) ) {
-						$claim->set_status( $status )->save_status();
-					} elseif ( in_array( $new_status, [ 'failed', 'cancelled', 'refunded' ], true ) ) {
+						if ( $claim->get_status() === 'draft' ) {
+
+							// Get listing.
+							$listing = $claim->get_listing();
+
+							// Get status.
+							$status = 'pending';
+
+							if ( ! get_option( 'hp_listing_claim_enable_moderation' ) && $listing && ! $listing->is_verified() ) {
+								$status = 'publish';
+							}
+
+							// Submit claim.
+							$claim->set_status( $status )->save_status();
+						}
+					} elseif ( in_array( $new_status, [ 'cancelled', 'refunded' ], true ) || ( 'failed' === $new_status && $claim->get_status() !== 'draft' ) ) {
+
+						// Reject claim.
 						$claim->set_status( 'trash' )->save_status();
 					}
 				}
