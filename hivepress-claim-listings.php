@@ -2,6 +2,8 @@
 /**
  * Plugin Name: HivePress Claim Listings
  * Description: Charge users for claiming listings.
+ * Requires at least: 5.7
+ * Requires PHP: 7.4
  * Version: 1.1.4
  * Author: HivePress
  * Author URI: https://hivepress.io/
