@@ -306,10 +306,20 @@ final class Listing_Claim extends Component {
 
 				if ( $claim ) {
 					if ( in_array( $new_status, [ 'processing', 'completed' ], true ) ) {
-
-						// Submit claim.
 						if ( $claim->get_status() === 'draft' ) {
-							$claim->set_status( get_option( 'hp_listing_claim_enable_moderation' ) ? 'pending' : 'publish' )->save_status();
+
+							// Get listing.
+							$listing = $claim->get_listing();
+
+							// Get status.
+							$status = 'pending';
+
+							if ( ! get_option( 'hp_listing_claim_enable_moderation' ) && $listing && ! $listing->is_verified() ) {
+								$status = 'publish';
+							}
+
+							// Submit claim.
+							$claim->set_status( $status )->save_status();
 						}
 					} elseif ( in_array( $new_status, [ 'cancelled', 'refunded' ], true ) || ( 'failed' === $new_status && $claim->get_status() !== 'draft' ) ) {
 
