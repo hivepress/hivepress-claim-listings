@@ -37,10 +37,11 @@ final class Listing_Claim extends Controller {
 					],
 
 					'listing_claim_submit_action'        => [
-						'base'   => 'listing_claims_resource',
-						'method' => 'POST',
-						'action' => [ $this, 'submit_listing_claim' ],
-						'rest'   => true,
+						'base'     => 'listing_claims_resource',
+						'method'   => 'POST',
+						'action'   => [ $this, 'submit_listing_claim' ],
+						'throttle' => 10,
+						'rest'     => true,
 					],
 
 					'listing_claim_submit_page'          => [

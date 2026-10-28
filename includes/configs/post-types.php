@@ -12,12 +12,13 @@ defined( 'ABSPATH' ) || exit;
 
 return [
 	'listing_claim' => [
-		'public'       => false,
-		'show_ui'      => true,
-		'show_in_menu' => 'edit.php?post_type=hp_listing',
-		'supports'     => [ 'title', 'author' ],
+		'public'          => false,
+		'show_ui'         => true,
+		'show_in_menu'    => 'edit.php?post_type=hp_listing',
+		'supports'        => [ 'title', 'author' ],
+		'capability_type' => 'page',
 
-		'labels'       => [
+		'labels'          => [
 			'name'               => esc_html__( 'Claims', 'hivepress-claim-listings' ),
 			'singular_name'      => esc_html__( 'Claim', 'hivepress-claim-listings' ),
 			'add_new'            => esc_html_x( 'Add New', 'claim', 'hivepress-claim-listings' ),
